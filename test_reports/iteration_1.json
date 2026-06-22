@@ -1,0 +1,46 @@
+{
+  "summary": "MedUZ AI investor-demo MVP tested end-to-end. Backend: 9/9 pytest assertions passing against the public preview URL — /api/health, /api/auth/mock-login (phone & google), /api/ai/chat (en/ru/uz with Claude Sonnet 4.5), /api/ai/doctor-tool (medical_summary), /api/appointments, /api/home-visits. Frontend: full mobile flow verified — splash auto-routes to /language after ~1.4s, language selection (UZ/RU/EN) with primary border + Continue, phone auth + OTP verification (any 4 digits), role selection (4 distinct cards) and all four role dashboards render correctly. Patient AI Chat returns structured Claude response in the chosen language with quick action buttons. Patient booking flow (date → time → type → confirm) completes and shows success screen with appointment details. Home-care flow submits and shows ETA 35 min + request ID. Doctor AI Assistant screen loads with 4 tools (medical_summary, recommendations, patient_notes, follow_up_plan). Admin & Service dashboards render with stats, modules and lists. Language switching in patient profile instantly localizes UI to Uzbek/Russian. No React Native red screens, no deprecated packages (expo-av / barcode-scanner / background-fetch), no console errors beyond the harmless 'shadow*' deprecated style warning.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "OTP screen", "issue": "'Auto-fill demo OTP (1234)' helper link works (fills 1234) but is missing a testID — spec listed it as a key interaction. Recommend adding testID=\"otp-autofill-button\".", "testID": "otp-autofill-button (missing)", "priority": "LOW"},
+      {"component": "AI Chat quick actions", "issue": "Find Doctor / Find Organization / Find Medicine / Request Home Visit buttons appear after the AI reply but have no testIDs detectable on the page (no 'quick' or 'action' prefixed data-testid found). Add testIDs like ai-quick-find-doctor / ai-quick-find-org / ai-quick-find-medicine / ai-quick-home-visit.", "testID": "ai-quick-*", "priority": "LOW"},
+      {"component": "Earnings screen period chips", "issue": "Period chips render (Today / This Week / This Month / This Year) and switch correctly but have no testID prefix (no period-* found). Add testIDs period-today/week/month/year for automation.", "testID": "period-* (missing)", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "global (web)", "issues": ["Console emits 'shadow* style props are deprecated. Use boxShadow.' warnings repeatedly. Cosmetic on web preview only — recommend migrating shadow* props to boxShadow in styles for cleanliness."]}
+    ],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_meduz_backend.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Add testID=\"otp-autofill-button\" to the 'Auto-fill demo OTP (1234)' Pressable on /otp screen.",
+    "Add testIDs to the four AI-chat quick action buttons (e.g. ai-quick-find-doctor, ai-quick-find-org, ai-quick-find-medicine, ai-quick-home-visit) — they currently navigate but are not testable.",
+    "Add testIDs to the Earnings period chips (period-today / period-week / period-month / period-year).",
+    "Optional polish: migrate shadow* style props to boxShadow to silence deprecation warnings on web."
+  ],
+  "critical_code_review_comments": [
+    "server.py: emergentintegrations + Claude Sonnet 4.5 integration is clean; LLM key is read from env, no hardcoded secrets.",
+    "server.py: all routes correctly prefixed with /api via api_router, CORS allowed for any origin (OK for demo).",
+    "server.py: MongoDB inserts strip _id from returned payloads by constructing typed Pydantic responses — no ObjectId leakage.",
+    "frontend uses EXPO_PUBLIC_BACKEND_URL (process.env.EXPO_PUBLIC_BACKEND_URL) consistently — no hardcoded backend URLs spotted in code under test.",
+    "No deprecated Expo packages detected (no expo-av, expo-barcode-scanner, expo-background-fetch).",
+    "Booking page exposes 14 future dates and 10 time slots with testIDs — excellent test coverage."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_meduz_backend.py (new — pytest suite for all backend endpoints incl. UZ/RU/EN AI chat parameterized)"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "~92% (all critical flows pass; 3 minor testID gaps)"},
+  "seed_data_creation": "No seed data created — all demo data lives statically on the frontend (DOCTORS/ORGS/PHARMACIES/SERVICES in /app/frontend/src/data/demo.ts). Backend tests insert TEST_ prefixed records into appointments/home_visits/ai_messages/users collections — safe demo data, no production data touched.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend public URL is EXPO_PUBLIC_BACKEND_URL=https://health-ecosystem-uz.preview.emergentagent.com. All /api routes verified. Frontend uses Expo Router groups (patient)/(doctor)/(admin)/(service); routes are reached without the group prefix (e.g. /doctors, /home-care, /ai-chat, /ai-assistant, /booking/[id], /doctor/[id]). For mobile UI tests use viewport 390x844 and the data-testid values discovered: language-{uz|ru|en}, language-continue-button, phone-input, phone-send-code-button, otp-input-{0..3}, otp-verify-button, role-{patient|doctor|admin|service}, module-{ai-chat|doctors|organizations|pharmacies|services|home-care}, doctor-card-dr-XXX, book-appointment-button, date-YYYY-MM-DD, time-HH:MM, type-{online|offline|home}, confirm-booking-button, hc-service-hc-XXX, hc-address, hc-phone, hc-time-*, hc-submit, doc-{appointments|analytics|earnings|ai|reviews|profile}, tool-{medical_summary|recommendations|patient_notes|follow_up_plan}, doc-ai-context, doc-ai-generate, profile-lang-{uz|ru|en}, switch-role-button, sign-out-button.",
+  "rca_of_issue": "N/A — no functional bugs found. The MVP works end-to-end as specified. Three minor testID gaps documented above are non-blocking for the investor demo but should be added to enable full automated regression coverage."
+}
