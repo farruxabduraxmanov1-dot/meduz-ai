@@ -103,6 +103,7 @@ export default function OtpScreen() {
           <TouchableOpacity
             onPress={() => setCode(["1", "2", "3", "4"])}
             style={{ marginTop: SPACING.lg, alignItems: "center" }}
+            testID="otp-autofill-button"
           >
             <Text style={{ color: COLORS.primary, fontSize: 13, fontWeight: "600" }}>
               Auto-fill demo OTP (1234)
