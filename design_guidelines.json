@@ -1,0 +1,183 @@
+{
+  "project_name": "MedUZ AI",
+  "app_type": "hybrid_fullstack (React Native Expo)",
+  "archetype": "Archetype 1 (Organic & Earthy / Trust) fused with Apple-style Soft Glassmorphism",
+  "theme": "LIGHT",
+  "design_philosophy": "Modern, Minimal, Clean, Trustworthy, Investor-ready. AI-first ecosystem where the AI assistant takes visual dominance over traditional search features.",
+  "typography": {
+    "heading_font": "System font (SF Pro Display on iOS, Roboto/Inter on Android)",
+    "body_font": "System font (SF Pro Text on iOS, Roboto/Inter on Android)",
+    "scale": {
+      "h1": "text-4xl font-bold tracking-tight text-gray-900",
+      "h2": "text-2xl font-bold tracking-tight text-gray-900",
+      "h3": "text-xl font-semibold text-gray-800",
+      "body": "text-base font-normal text-gray-600",
+      "caption": "text-sm font-medium text-gray-500",
+      "tiny": "text-xs font-medium text-gray-400"
+    }
+  },
+  "colors": {
+    "background": "#F5F7FF",
+    "surface": "#FFFFFF",
+    "primary": "#2563EB",
+    "secondary": "#7C3AED",
+    "accent_gradient": ["#2563EB", "#7C3AED"],
+    "text": {
+      "primary": "#111827",
+      "secondary": "#4B5563",
+      "tertiary": "#9CA3AF",
+      "inverse": "#FFFFFF"
+    },
+    "border": "#E5E7EB",
+    "status": {
+      "success": "#10B981",
+      "warning": "#F59E0B",
+      "danger": "#EF4444",
+      "info": "#3B82F6"
+    }
+  },
+  "spacing_and_layout": {
+    "container_padding": "p-6",
+    "card_padding": "p-5",
+    "gap": "gap-4",
+    "border_radius": {
+      "small": "rounded-lg",
+      "medium": "rounded-2xl",
+      "large": "rounded-3xl",
+      "full": "rounded-full"
+    },
+    "shadows": {
+      "soft": "shadow-[0_8px_30px_rgba(37,99,235,0.06)]",
+      "floating": "shadow-[0_20px_40px_rgba(37,99,235,0.12)]"
+    }
+  },
+  "components": {
+    "buttons": "Large touch targets (min-h-[56px]), full width, rounded-2xl. Primary buttons use blue-to-purple gradient background with white text. Secondary buttons use white background with blue text and subtle shadow.",
+    "cards": "White background, rounded-3xl, soft shadow. Avoid hard borders. Internal padding p-5 or p-6.",
+    "inputs": "Height 56px, rounded-2xl, background #F9FAFB, subtle border #E5E7EB, focus state changes border to primary blue.",
+    "ai_assistant_card": "Dominant UI element on Patient Dashboard. Height 200px+, uses accent_gradient background, glowing effect, white text, jellyfish icon, and an inviting 'Start AI Consultation' CTA."
+  },
+  "icons": {
+    "library": "lucide-react-native",
+    "usage": "Use stroke-width 2 or 1.5. Sizes: 20px for inline, 24px for standard, 32px for hero/cards."
+  },
+  "media": {
+    "logos": [
+      {
+        "category": "app_logo_concept",
+        "description": "Medical Jellyfish concept (neon blue/white intelligence representation)",
+        "url": "https://images.unsplash.com/photo-1584456647415-bf8c2af1a913"
+      }
+    ],
+    "images": [
+      {
+        "category": "doctor_portrait_male",
+        "description": "Professional male doctor with stethoscope",
+        "url": "https://images.pexels.com/photos/32160037/pexels-photo-32160037.jpeg"
+      },
+      {
+        "category": "doctor_portrait_male_2",
+        "description": "Confident male doctor with crossed arms",
+        "url": "https://images.pexels.com/photos/6129500/pexels-photo-6129500.jpeg"
+      },
+      {
+        "category": "hospital_clinic",
+        "description": "Modern medical center reception",
+        "url": "https://images.pexels.com/photos/33812025/pexels-photo-33812025.jpeg"
+      },
+      {
+        "category": "pharmacy_interior",
+        "description": "Elegant pharmacy store interior",
+        "url": "https://images.pexels.com/photos/8657368/pexels-photo-8657368.jpeg"
+      },
+      {
+        "category": "nurse_caregiver",
+        "description": "Nurse providing care to elderly",
+        "url": "https://images.pexels.com/photos/9893512/pexels-photo-9893512.jpeg"
+      }
+    ]
+  },
+  "screens": [
+    {
+      "id": "1",
+      "name": "Splash",
+      "layout": "Full screen gradient background (Blue -> Purple). Centered Jellyfish logo image. 'MedUZ AI' text in white, text-4xl font-bold. Bottom text: 'Intelligent Healthcare'."
+    },
+    {
+      "id": "2",
+      "name": "Language Selection",
+      "layout": "Background #F5F7FF. Top padding 20vh. Heading 'Choose your language'. 3 large white cards (UZ, RU, EN) with soft shadows and flag icons. 'Continue' button at bottom."
+    },
+    {
+      "id": "3",
+      "name": "Auth",
+      "layout": "Clean white sheet over #F5F7FF background. Jellyfish logo at top. Inputs: Phone Number. 'Send SMS Code' primary button. OR divider. 'Continue with Google' button (white card, Google icon). Mocked flow."
+    },
+    {
+      "id": "4",
+      "name": "Role Selection",
+      "layout": "Heading 'Who are you?'. 2x2 Grid or vertical list of 4 premium cards: Patient, Doctor, Org Admin, Medical Services. Each card has a distinct Lucide icon (User, Stethoscope, Building, HeartPulse) and subtle blue/purple icon background."
+    },
+    {
+      "id": "5",
+      "name": "PATIENT_Dashboard",
+      "layout": "Top nav: User profile pic & Greeting. HUGE prominent AI Assistant Card spanning full width, gradient background, 'How are you feeling today? Start AI Consultation'. Below: 'Services' section in a 3x2 grid of smaller white cards (Doctors, Clinics, Pharmacies, Services, Home Visit, Chat History). Bottom tab navigator."
+    },
+    {
+      "id": "6",
+      "name": "PATIENT_AI_Chat",
+      "layout": "Header with 'MedUZ AI'. Chat interface. AI messages have soft gray background, User messages have blue background. Input field at bottom with camera icon for image upload. Floating action chips above input: 'Find Doctor', 'Find Medicine', 'Home Visit'."
+    },
+    {
+      "id": "7",
+      "name": "PATIENT_Doctors",
+      "layout": "Search bar + Filter chips (Specialty, Rating, Price). Vertical list of Doctor Cards (Image left, details right, 'Book' button). Doctor Profile: Large image header, Stats (Experience, Rating), About, Schedule horizontal scroll (Days) and vertical slots (Times). 'Confirm Appointment' fixed bottom button."
+    },
+    {
+      "id": "8",
+      "name": "PATIENT_Organizations",
+      "layout": "List of hospitals/clinics. Profile: Hero image (hospital_clinic), Name, Rating, Address. Tabs: Doctors, Departments, Reviews. List of departments mapping to search filters."
+    },
+    {
+      "id": "9",
+      "name": "PATIENT_Pharmacies",
+      "layout": "Search input for 'Medicine Name'. Map view toggle. List of pharmacies with distance. Medicine Page: Image, generic name, usage, price, 'Available at X pharmacies' button."
+    },
+    {
+      "id": "10",
+      "name": "PATIENT_MedicalServices",
+      "layout": "Categories: Nursing, Physiotherapy, Massage. List of independent providers. Profile: Avatar, Services list with prices, Reviews, 'Request Service' button."
+    },
+    {
+      "id": "11",
+      "name": "PATIENT_HomeAssistance",
+      "layout": "Urgent request flow. Step 1: Patient Details. Step 2: Symptoms. Step 3: Location (map mock). Step 4: 'Request Urgent Visit' red/warning primary button."
+    },
+    {
+      "id": "12",
+      "name": "DOCTOR_Dashboard",
+      "layout": "Top: 'Good morning, Dr. X'. Stats row: Appointments today, Earnings. Next Appointment Card (prominent). Tabs: Schedule, Requests. 'AI Assistant for Doctors' floating button."
+    },
+    {
+      "id": "13",
+      "name": "ADMIN_Dashboard",
+      "layout": "Clinic overview. Large chart area (Revenue/Appointments). Quick stats: Active Doctors, Total Patients. Quick Actions: 'Add Doctor', 'Manage Departments'."
+    },
+    {
+      "id": "14",
+      "name": "SERVICE_PROVIDER_Dashboard",
+      "layout": "Similar to Doctor but focused on Orders and Income. Active Orders list, Past completed, Reviews summary."
+    }
+  ],
+  "accessibility_and_testing": {
+    "test_attributes": "All interactive elements MUST include testID='component-role-name' (e.g., testID='login-submit-button') for React Native Expo testing.",
+    "contrast": "Ensure white text on the blue-purple gradient has a contrast ratio of at least 4.5:1. Avoid thin font weights on gradients."
+  },
+  "instructions_to_main_agent": [
+    "Use standard React Native components (View, Text, TouchableOpacity, Image, ScrollView) and style them using either Tailwind/NativeWind classes or standard StyleSheets based on the provided design system.",
+    "Do NOT use HTML tags (div, span, button) as this is an Expo project.",
+    "Implement the mocked auth flow and role switching locally using state or a mocked context.",
+    "Ensure the AI Assistant Card on the Patient Dashboard is the most visually dominant element, using the accent_gradient.",
+    "Use lucide-react-native for icons."
+  ]
+}
