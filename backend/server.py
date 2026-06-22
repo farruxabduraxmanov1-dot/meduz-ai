@@ -108,6 +108,8 @@ class HomeVisitRequest(BaseModel):
     phone: str
     notes: Optional[str] = ""
     patient_name: str
+    gender_preference: Optional[str] = "any"
+    eta_minutes: Optional[int] = None
 
 
 class HomeVisitResponse(BaseModel):
@@ -115,6 +117,7 @@ class HomeVisitResponse(BaseModel):
     service: str
     status: str = "submitted"
     eta_minutes: int = 35
+    gender_preference: Optional[str] = "any"
     created_at: datetime
 
 
@@ -312,6 +315,19 @@ async def create_appointment(req: AppointmentRequest):
 
 @api_router.post("/home-visits", response_model=HomeVisitResponse)
 async def create_home_visit(req: HomeVisitRequest):
+    # Default ETA per service if not provided
+    DEFAULT_ETA = {
+        "Doctor Home Visit": 35,
+        "Nurse Home Visit": 30,
+        "Injection Service": 22,
+        "IV Therapy": 45,
+        "Dressings": 27,
+        "Postoperative Care": 35,
+        "Elderly Care": 45,
+        "Child Care": 35,
+        "Rehabilitation": 65,
+    }
+    eta = req.eta_minutes if req.eta_minutes else DEFAULT_ETA.get(req.service, 35)
     visit = {
         "id": str(uuid.uuid4()),
         "service": req.service,
@@ -320,6 +336,8 @@ async def create_home_visit(req: HomeVisitRequest):
         "phone": req.phone,
         "notes": req.notes or "",
         "patient_name": req.patient_name,
+        "gender_preference": req.gender_preference or "any",
+        "eta_minutes": eta,
         "status": "submitted",
         "created_at": datetime.now(timezone.utc).isoformat(),
     }
@@ -328,7 +346,8 @@ async def create_home_visit(req: HomeVisitRequest):
         id=visit["id"],
         service=visit["service"],
         status="submitted",
-        eta_minutes=35,
+        eta_minutes=eta,
+        gender_preference=req.gender_preference or "any",
         created_at=datetime.now(timezone.utc),
     )
 
