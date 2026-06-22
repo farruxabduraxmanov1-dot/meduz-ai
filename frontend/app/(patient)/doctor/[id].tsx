@@ -15,7 +15,7 @@ import {
 import { COLORS, SPACING, RADIUS, SHADOW } from "@/src/theme";
 import { tr } from "@/src/i18n";
 import { useAppState } from "@/src/store/app-state";
-import { DOCTORS, ORGANIZATIONS, generateReviews } from "@/src/data/demo";
+import { DOCTORS, ORGANIZATIONS, generateReviews, getDoctorExtras } from "@/src/data/demo";
 
 export default function DoctorProfile() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -24,6 +24,8 @@ export default function DoctorProfile() {
   const doctor = DOCTORS.find((d) => d.id === id) || DOCTORS[0];
   const reviews = generateReviews(parseInt(doctor.id.replace(/\D/g, ""), 10) || 1, 6);
   const linkedOrgs = ORGANIZATIONS.filter((o) => doctor.organizationIds.includes(o.id));
+  const extras = getDoctorExtras(doctor.id);
+  const primaryOrgId = extras.primaryOrganizationId || doctor.organizationIds[0];
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
@@ -57,22 +59,58 @@ export default function DoctorProfile() {
 
         <Card>
           <Text style={styles.sectionTitle}>Workplaces</Text>
-          {linkedOrgs.length > 0 ? linkedOrgs.map((o) => (
-            <TouchableOpacity
-              key={o.id}
-              onPress={() => router.push(`/(patient)/organization/${o.id}` as any)}
-              style={styles.orgRow}
-              testID={`linked-org-${o.id}`}
-            >
-              <Image source={{ uri: o.logo }} style={styles.orgLogo} />
-              <View style={{ flex: 1, marginLeft: SPACING.md }}>
-                <Text style={styles.orgName}>{o.name}</Text>
-                <Text style={styles.orgType}>{o.type} · {o.city}</Text>
-              </View>
-              <MaterialCommunityIcons name="chevron-right" size={20} color={COLORS.text.tertiary} />
-            </TouchableOpacity>
-          )) : doctor.workplaces.map((w) => (
+          {linkedOrgs.length > 0 ? linkedOrgs.map((o) => {
+            const isPrimary = o.id === primaryOrgId;
+            return (
+              <TouchableOpacity
+                key={o.id}
+                onPress={() => router.push(`/(patient)/organization/${o.id}` as any)}
+                style={styles.orgRow}
+                testID={`linked-org-${o.id}`}
+              >
+                <Image source={{ uri: o.logo }} style={styles.orgLogo} />
+                <View style={{ flex: 1, marginLeft: SPACING.md }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+                    <Text style={styles.orgName} numberOfLines={1}>{o.name}</Text>
+                    {isPrimary && (
+                      <Tag label="Primary" icon="star" color="#fff" background={COLORS.primary} />
+                    )}
+                  </View>
+                  <Text style={styles.orgType}>{o.type} · {o.city}</Text>
+                </View>
+                <MaterialCommunityIcons name="chevron-right" size={20} color={COLORS.text.tertiary} />
+              </TouchableOpacity>
+            );
+          }) : doctor.workplaces.map((w) => (
             <Text key={w} style={styles.body}>· {w}</Text>
+          ))}
+        </Card>
+
+        <Card>
+          <Text style={styles.sectionTitle}>Education</Text>
+          {extras.education.map((e, i) => (
+            <View key={i} style={styles.eduRow}>
+              <View style={styles.eduDot} />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.eduTitle}>{e.degree}</Text>
+                <Text style={styles.eduMeta}>{e.school} · {e.year}</Text>
+              </View>
+            </View>
+          ))}
+        </Card>
+
+        <Card>
+          <Text style={styles.sectionTitle}>Certificates</Text>
+          {extras.certificates.map((c, i) => (
+            <View key={i} style={styles.certRow}>
+              <View style={styles.certIcon}>
+                <MaterialCommunityIcons name="certificate" size={18} color={COLORS.primary} />
+              </View>
+              <View style={{ flex: 1, marginLeft: SPACING.md }}>
+                <Text style={styles.certTitle}>{c.title}</Text>
+                <Text style={styles.certMeta}>{c.org} · {c.year}</Text>
+              </View>
+            </View>
           ))}
         </Card>
 
@@ -126,8 +164,16 @@ const styles = StyleSheet.create({
   body: { fontSize: 13, color: COLORS.text.secondary, lineHeight: 20 },
   orgRow: { flexDirection: "row", alignItems: "center", paddingVertical: SPACING.md, borderBottomWidth: 1, borderBottomColor: COLORS.borderSoft },
   orgLogo: { width: 48, height: 48, borderRadius: 12 },
-  orgName: { fontSize: 14, fontWeight: "700", color: COLORS.text.primary },
+  orgName: { fontSize: 14, fontWeight: "700", color: COLORS.text.primary, flex: 1 },
   orgType: { fontSize: 12, color: COLORS.text.secondary, marginTop: 2 },
+  eduRow: { flexDirection: "row", alignItems: "flex-start", paddingVertical: SPACING.sm },
+  eduDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: COLORS.primary, marginTop: 6, marginRight: SPACING.md },
+  eduTitle: { fontSize: 13, fontWeight: "700", color: COLORS.text.primary },
+  eduMeta: { fontSize: 12, color: COLORS.text.secondary, marginTop: 2 },
+  certRow: { flexDirection: "row", alignItems: "center", paddingVertical: SPACING.sm },
+  certIcon: { width: 36, height: 36, borderRadius: 18, backgroundColor: "rgba(37,99,235,0.10)", alignItems: "center", justifyContent: "center" },
+  certTitle: { fontSize: 13, fontWeight: "700", color: COLORS.text.primary },
+  certMeta: { fontSize: 12, color: COLORS.text.secondary, marginTop: 2 },
   reviewRow: { paddingVertical: SPACING.md, borderBottomWidth: 1, borderBottomColor: COLORS.borderSoft },
   reviewAuthor: { fontSize: 13, fontWeight: "700", color: COLORS.text.primary },
   reviewDate: { fontSize: 11, color: COLORS.text.tertiary, marginTop: 2, marginBottom: 4 },

@@ -1,0 +1,50 @@
+{
+  "summary": "MedUZ AI V2 upgrades verified end-to-end against the public preview URL. Backend: 13/13 pytest cases pass — /api/health, /api/auth/mock-login (phone+google), /api/ai/chat (en/ru/uz Claude Sonnet 4.5), /api/ai/doctor-tool x4 variants (medical_summary, recommendations, patient_notes, follow_up_plan), /api/appointments, /api/home-visits (legacy payload + V2 payload with gender_preference + eta_minutes). Frontend (390x844 mobile viewport): full V2 flow validated — JellyfishLogo SVG visible on Language/Auth/Role/AI welcome (screenshots captured); Patient AI Chat welcome card 'AI Medical Assistant' shows 4 suggested prompt cards (child fever / headache / burn / abdominal pain) and after tapping returns a real Claude reply with the 4 quick action pills (ai-quick-doctor / ai-quick-org / ai-quick-medicine / ai-quick-home) — pills navigate correctly. Uzbek-localised specialties (Kardiolog, Pediatr, Nevrolog, Dermatolog, Stomatolog, LOR, Ginekolog, Endokrinolog, Ortoped, Urolog, Oftalmolog, etc.) all visible on Doctors list. Doctor profile dr-001 shows photo, Kardiolog spec, 17+/4.9/184 stat row, Online/Offline/Home Visit/Premium tags, About/Languages/Consultation, 2 Workplaces with 'Primary' tag on the right one, Education (Doctor of Medicine + Fellowship), Certificates (Board Certification – Cardiology, ESC Member, Advanced Cardiac Life Support — i.e. ACLS), Reviews, footer Message + 'Book Appointment' gradient button. Tapping a workplace correctly opens the organization profile (cross-link to /organization/org-001), and tapping an org-doctor returns to /doctor/dr-001 (full cross-linkage confirmed). Organization profile has hero image, name/type/city, rating + doctorsCount, Address/Phone/Hours card and three working tabs (Doctors / Departments / Reviews) with real content; footer Call + Map + Book Appointment. Pharmacies tab shows 24/7 badge, Delivery ETA badge, Open now/Closed tag, distance; Find Medicine tab shows 8 medicine-* testID cards, tapping opens a Medicine detail page with per-pharmacy listings — Reserve button correctly toggles 'Reserve' → 'Reserved' on tap. Home Care V2: 3x3 service grid renders, ETA tag updates live per service (Doctor 25-45, Nurse 20-40, Injection 15-30, IV 30-60, Rehab 45-90 — all verified). Submitting Rehab returned a non-fixed ETA pill of 54 min (within 45-90); a second submit (Doctor visit) returned 33 min (within 25-45) — V2 randomised ETA confirmed. Specialist card + Call/Message/Track + Request details + Back to Home button all present. Medical Services has the 3 sub-tabs Mutaxassislar / Diagnostika / Muolajalar; Diagnostika lists MRT, KT, UZI, Rentgen, EKG, EXOKG, Endoskopiya with Imaging/Cardiac/Endoscopy category tags, durations, providers count and prices; Muolajalar lists Inyeksiya, Kapelnitsa, Bog'lov, Reabilitatsiya, Postoperatsion parvarish with Home Visit badge + specialist count + price. No React Native red screens, no Expo deprecation issues (no expo-av/expo-barcode-scanner/expo-background-fetch). Only console noise = harmless 'shadow*' style deprecation warning.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/home-visits", "issue": "HomeVisitResponse.eta_minutes is hardcoded to 35 server-side and ignores the client-supplied eta_minutes. The frontend computes a deterministic per-service ETA and shows it locally, so the visible ETA pill is correct, but the server doesn't echo the real value. Recommend echoing req.eta_minutes (and persisting gender_preference) in the response model for parity with the V2 payload."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "AI Chat suggested prompts", "issue": "Testable but testIDs are dynamic ('suggested-<first 16 chars of localised text>') which breaks automation when language changes. Recommend stable IDs like ai-prompt-fever / ai-prompt-headache / ai-prompt-burn / ai-prompt-pain (referenced /app/frontend/app/(patient)/ai-chat.tsx:174).", "testID": "suggested-* (dynamic)", "priority": "LOW"},
+      {"component": "Pharmacy chip tabs", "issue": "Container has testID 'pharmacy-tabs' but the two chips (Pharmacies / Find Medicine) have no per-chip testID. Add pharm-tab-pharmacies and pharm-tab-medicines for reliable automation (referenced /app/frontend/app/(patient)/pharmacies.tsx:53).", "testID": "pharm-tab-* (missing)", "priority": "LOW"},
+      {"component": "Services screen sub-tabs", "issue": "Mutaxassislar/Diagnostika/Muolajalar chips functional but lack stable per-tab testIDs (services-tab-mutaxassislar / services-tab-diagnostika / services-tab-muolajalar).", "testID": "services-tab-* (missing)", "priority": "LOW"},
+      {"component": "Doctor workplace rows", "issue": "Workplace tap target uses testID 'linked-org-<orgId>' instead of the spec-named 'workplace-<orgId>'. Behaviour is correct (navigates to organization profile), just a naming inconsistency.", "testID": "linked-org-* (works)", "priority": "INFO"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "global (web preview)", "issues": ["React Native Web emits 'shadow* style props are deprecated. Use boxShadow.' warnings repeatedly. Cosmetic only — migrate shadow* style props in /app/frontend/src/theme.ts (SHADOW.card / SHADOW.floating) to boxShadow for a clean console."]}
+    ],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_meduz_backend.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "(Optional polish) Make AI Chat suggested-prompt testIDs stable (ai-prompt-fever/headache/burn/pain) instead of language-dependent suggested-<text>.",
+    "(Optional polish) Add testIDs to Pharmacies chip tabs (pharm-tab-pharmacies, pharm-tab-medicines) and Services sub-tabs (services-tab-mutaxassislar/diagnostika/muolajalar).",
+    "(Backend nice-to-have) In POST /api/home-visits, echo the client-supplied eta_minutes and persist gender_preference into the visit document so the response matches V2 reality instead of the hardcoded 35.",
+    "(Cosmetic) Migrate shadow* style props in /app/frontend/src/theme.ts to boxShadow to silence the React Native Web deprecation warnings."
+  ],
+  "critical_code_review_comments": [
+    "server.py is clean and fully async (motor) — all routes prefixed /api, no _id leakage, env vars sourced from /app/backend/.env, no hardcoded secrets.",
+    "HomeVisitRequest model does not declare gender_preference / eta_minutes, so the V2 frontend fields are silently dropped (Pydantic default = ignore). Not a functional bug for the demo (UI computes ETA locally), but worth aligning.",
+    "Frontend uses process.env.EXPO_PUBLIC_BACKEND_URL consistently across home-care.tsx and ai-chat.tsx — no hardcoded backend URLs spotted.",
+    "demo.ts: HOME_CARE_ETA + computeServiceEta(seedRand seeded by serviceId+address) gives deterministic-but-varying ETAs per service+address — correctly produces 33/54/etc within the documented range. Spec satisfied.",
+    "DOCTOR_EXTRAS for dr-001 includes the expected Tashkent Medical Academy + Bakulev Fellowship education entries and Board Cert / ESC / Advanced Cardiac Life Support certificates. Primary org = org-006 (Medion Private Clinic).",
+    "pharmacyHas24h + pharmacyHasDelivery + pharmacyDeliveryEta all driven by deterministic seedRand — correct.",
+    "doctor/[id].tsx workplace row testID is 'linked-org-<orgId>' (not the spec's 'workplace-<orgId>') — minor naming mismatch only."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_meduz_backend.py (extended: parameterised TestDoctorTool over all 4 tools; added TestHomeVisits.test_create_home_visit_v2_payload covering gender_preference + eta_minutes)"
+  ],
+  "success_rate": {"backend": "100% (13/13 pytest)", "frontend": "~95% — every V2 flow in the spec works; the 4 'issues' above are testID/naming nits, not functional defects"},
+  "seed_data_creation": "No production seed data created. Backend tests insert TEST_-prefixed rows into appointments/home_visits/ai_messages/users collections — safe demo data.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend public URL = EXPO_PUBLIC_BACKEND_URL=https://health-ecosystem-uz.preview.emergentagent.com. V2 frontend testIDs discovered: language-{uz|ru|en}, language-continue-button, auth-google-button, phone-input, phone-send-code-button, otp-input-{0..3}, otp-verify-button, role-{patient|doctor|admin|service}, module-{ai-chat|doctors|organizations|pharmacies|services|home-care}, suggested-<first16chars> (AI prompts), ai-quick-{doctor|org|medicine|home}, ai-chat-input, ai-send-button, ai-attach-button, doctor-card-dr-XXX, linked-org-<orgId> (workplace rows on doctor page), book-appointment-button, org-tab-{doctors|departments|reviews}, org-doctor-<drId>, org-call-button, org-directions-button, org-book-button, pharmacy-<id>, ph-call/route/deliver-<id>, medicine-<id>, med-call/reserve/deliver-<id>, hc-service-hc-XXX, hc-gender-{any|male|female}, hc-address, hc-phone, hc-time-*, hc-notes, hc-submit, hc-call/msg/track-specialist, home-care-back-home. Auth via Google is the fastest demo path; phone+1234 OTP also works.",
+  "rca_of_issue": "N/A — no functional bugs found. V2 upgrades all working as specified. Two notes for the main agent: (1) backend /api/home-visits returns eta_minutes=35 regardless of the V2 payload (UI computes/displays the correct value locally so this is invisible to the demo), and (2) a handful of testID gaps/naming inconsistencies (suggested-* dynamic, pharm-tab-* missing, services-tab-* missing, linked-org-* vs workplace-*) — all non-blocking for the investor demo but worth cleaning up for full automation coverage."
+}

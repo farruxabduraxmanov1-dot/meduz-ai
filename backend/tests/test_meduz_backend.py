@@ -85,24 +85,26 @@ class TestAIChat:
             assert body["urgency"] in {"LOW", "MEDIUM", "HIGH", "EMERGENCY"}
 
 
-# ============== DOCTOR TOOL ==============
+# ============== DOCTOR TOOL (all 4 variants) ==============
 class TestDoctorTool:
-    def test_medical_summary(self, api):
+    CTX = (
+        "45 year old male, chest pain on exertion for 2 weeks, "
+        "hypertension, smoker, BP 150/95, ECG shows ST depression in V4-V6."
+    )
+
+    @pytest.mark.parametrize(
+        "tool",
+        ["medical_summary", "recommendations", "patient_notes", "follow_up_plan"],
+    )
+    def test_doctor_tool_variants(self, api, tool):
         r = api.post(
             f"{BASE_URL}/api/ai/doctor-tool",
-            json={
-                "tool": "medical_summary",
-                "patient_context": (
-                    "45 year old male, chest pain on exertion for 2 weeks, "
-                    "hypertension, smoker, BP 150/95, ECG shows ST depression in V4-V6."
-                ),
-                "language": "en",
-            },
+            json={"tool": tool, "patient_context": self.CTX, "language": "en"},
             timeout=90,
         )
         assert r.status_code == 200, r.text
         body = r.json()
-        assert body["tool"] == "medical_summary"
+        assert body["tool"] == tool
         assert isinstance(body["content"], str) and len(body["content"]) > 40
 
 
@@ -145,3 +147,22 @@ class TestHomeVisits:
         assert body["status"] == "submitted"
         assert body["eta_minutes"] == 35
         assert body["service"] == "nurse_visit"
+
+    def test_create_home_visit_v2_payload(self, api):
+        """V2 payload includes gender_preference + eta_minutes (server ignores extras)."""
+        payload = {
+            "service": "Doctor Home Visit",
+            "address": "TEST_Tashkent, Mirzo Ulugbek",
+            "preferred_time": "ASAP",
+            "phone": "+998901112233",
+            "patient_name": "TEST_V2",
+            "notes": "TEST V2 home visit",
+            "gender_preference": "female",
+            "eta_minutes": 42,
+        }
+        r = api.post(f"{BASE_URL}/api/home-visits", json=payload, timeout=20)
+        assert r.status_code == 200, r.text
+        body = r.json()
+        assert body["id"]
+        assert body["service"] == "Doctor Home Visit"
+        assert body["status"] == "submitted"

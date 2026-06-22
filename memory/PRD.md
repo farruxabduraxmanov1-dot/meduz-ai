@@ -35,7 +35,18 @@ FastAPI app at `/app/backend/server.py`. Endpoints:
 - Background `#F5F7FF`, white surfaces with soft shadows
 - Blue→Purple gradient accents (`#2563EB` → `#7C3AED`)
 - Large rounded corners, premium spacing, modern icons (MaterialCommunityIcons + Ionicons)
-- Medical Jellyfish concept logo as gradient circle with `jellyfish-outline` icon
+- Medical Jellyfish concept logo as a premium custom SVG (gradient circle + medical cross + tentacles) rendered with `react-native-svg`
+
+## V2 Enhancements (June 2026)
+- **Premium SVG Jellyfish logo** (replaces icon-based placeholder) — used on splash, AI chat, auth, role selection
+- **Uzbek localized specialties** in demo data (Kardiolog, Pediatr, Nevrolog, Stomatolog, LOR, Ginekolog, etc.)
+- **Dedicated Doctor Profile screen** (before booking) with: Education, Certificates, multiple Workplaces (Primary tag), languages, reviews
+- **Organization profile** with 3 tabs (Doctors / Departments / Reviews) showing linked doctors with rating and specialty — proves cross-listing of doctors at multiple orgs
+- **Advanced Medicine search**: 24/7 + Delivery + Reserve badges, per-pharmacy price, distance, reservation and delivery actions
+- **Pharmacy list** with 24/7, Delivery (with ETA in minutes), Open Now badges, Call/Route/Order action buttons
+- **Home Care V2**: gender preference (Any/Male/Female), specialist preview (photo, rating, reviews, ETA badge), dynamic ETA per service type (e.g. "Nurse will arrive in 39 minutes"), Call/Message/Track quick actions on success screen
+- **Diagnostics & Procedures** as separate sub-tabs in Medical Services (MRT, KT, UZI, Rentgen, EKG, EXOKG, Endoskopiya + Inyeksiya, Kapelnitsa, Bog'lov, Reabilitatsiya, Postoperatsion parvarish)
+- **ChatGPT-style AI Chat** keyboard handling using `react-native-keyboard-controller` (`KeyboardStickyView`) — input bar always above keyboard
 
 ## Monetization (architectural placeholders — no real payments)
 - Featured Doctor / Featured Organization / Featured Provider premium tiers

@@ -7,12 +7,10 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-  Image,
-  KeyboardAvoidingView,
-  Platform,
   ActivityIndicator,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { KeyboardStickyView } from "react-native-keyboard-controller";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -23,7 +21,6 @@ import {
   JellyfishLogo,
   MaterialCommunityIcons,
   Ionicons,
-  GradientButton,
 } from "@/src/components/ui";
 import { COLORS, SPACING, RADIUS, SHADOW } from "@/src/theme";
 import { tr } from "@/src/i18n";
@@ -44,6 +41,7 @@ const URGENCY_COLOR: Record<string, string> = {
 export default function AiChat() {
   const router = useRouter();
   const { language } = useAppState();
+  const insets = useSafeAreaInsets();
   const sessionIdRef = useRef(`sess-${Date.now()}`);
   const scrollRef = useRef<ScrollView>(null);
   const [messages, setMessages] = useState<Msg[]>([]);
@@ -149,11 +147,12 @@ export default function AiChat() {
           ))}
         </ScrollView>
       ) : (
-        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined} keyboardVerticalOffset={20}>
+        <View style={{ flex: 1 }}>
           <ScrollView
             ref={scrollRef}
             style={{ flex: 1 }}
-            contentContainerStyle={{ padding: SPACING.xl, paddingBottom: SPACING.xxxl }}
+            contentContainerStyle={{ padding: SPACING.xl, paddingBottom: 120 + insets.bottom }}
+            keyboardShouldPersistTaps="handled"
           >
             {empty && (
               <View style={styles.welcome}>
@@ -225,40 +224,42 @@ export default function AiChat() {
 
             {lastSuggestions.length > 0 && messages.length > 0 && !loading && (
               <View style={styles.quickActionsRow}>
-                <QuickActionPill icon="stethoscope" label={tr(language, "findDoctor")} onPress={() => router.push("/(patient)/doctors")} testID="qa-doctor" />
-                <QuickActionPill icon="hospital-building" label={tr(language, "findOrg")} onPress={() => router.push("/(patient)/organizations")} testID="qa-org" />
-                <QuickActionPill icon="pill" label={tr(language, "findMedicine")} onPress={() => router.push("/(patient)/pharmacies")} testID="qa-medicine" />
-                <QuickActionPill icon="home-heart" label={tr(language, "requestHomeVisit")} onPress={() => router.push("/(patient)/home-care")} testID="qa-home" />
+                <QuickActionPill icon="stethoscope" label={tr(language, "findDoctor")} onPress={() => router.push("/(patient)/doctors")} testID="ai-quick-doctor" />
+                <QuickActionPill icon="hospital-building" label={tr(language, "findOrg")} onPress={() => router.push("/(patient)/organizations")} testID="ai-quick-org" />
+                <QuickActionPill icon="pill" label={tr(language, "findMedicine")} onPress={() => router.push("/(patient)/pharmacies")} testID="ai-quick-medicine" />
+                <QuickActionPill icon="home-heart" label={tr(language, "requestHomeVisit")} onPress={() => router.push("/(patient)/home-care")} testID="ai-quick-home" />
               </View>
             )}
           </ScrollView>
 
-          {/* Input */}
-          <View style={styles.inputBar}>
-            <TouchableOpacity style={styles.attachBtn} onPress={() => send("Here is a photo of my symptom (demo)")} testID="ai-attach-button">
-              <MaterialCommunityIcons name="camera-plus" size={22} color={COLORS.primary} />
-            </TouchableOpacity>
-            <TextInput
-              value={input}
-              onChangeText={setInput}
-              placeholder={tr(language, "chatPlaceholder")}
-              placeholderTextColor={COLORS.text.tertiary}
-              style={styles.input}
-              multiline
-              testID="ai-chat-input"
-            />
-            <TouchableOpacity
-              onPress={() => send()}
-              disabled={!input.trim() || loading}
-              style={[styles.sendBtn, (!input.trim() || loading) && { opacity: 0.4 }]}
-              testID="ai-send-button"
-            >
-              <LinearGradient colors={["#2563EB", "#7C3AED"]} style={styles.sendGrad}>
-                <Ionicons name="send" size={18} color="#fff" />
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
-        </KeyboardAvoidingView>
+          {/* Sticky input bar that auto-tracks the keyboard */}
+          <KeyboardStickyView offset={{ closed: 0, opened: 0 }}>
+            <View style={[styles.inputBar, { paddingBottom: SPACING.md + insets.bottom }]}>
+              <TouchableOpacity style={styles.attachBtn} onPress={() => send("Bu yerda mening simptom rasmim (demo)")} testID="ai-attach-button">
+                <MaterialCommunityIcons name="camera-plus" size={22} color={COLORS.primary} />
+              </TouchableOpacity>
+              <TextInput
+                value={input}
+                onChangeText={setInput}
+                placeholder="Describe your symptoms or upload a photo"
+                placeholderTextColor={COLORS.text.tertiary}
+                style={styles.input}
+                multiline
+                testID="ai-chat-input"
+              />
+              <TouchableOpacity
+                onPress={() => send()}
+                disabled={!input.trim() || loading}
+                style={[styles.sendBtn, (!input.trim() || loading) && { opacity: 0.4 }]}
+                testID="ai-send-button"
+              >
+                <LinearGradient colors={["#2563EB", "#7C3AED"]} style={styles.sendGrad}>
+                  <Ionicons name="send" size={18} color="#fff" />
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          </KeyboardStickyView>
+        </View>
       )}
     </SafeAreaView>
   );

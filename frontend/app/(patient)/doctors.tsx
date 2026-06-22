@@ -147,6 +147,6 @@ const styles = StyleSheet.create({
   dot: { color: COLORS.text.tertiary, marginHorizontal: 6 },
   exp: { fontSize: 11, color: COLORS.text.tertiary },
   price: { fontSize: 13, fontWeight: "700", color: COLORS.primary },
-  bookSmall: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: RADIUS.pill, backgroundColor: COLORS.primary },
-  bookSmallText: { color: "#fff", fontSize: 12, fontWeight: "700" },
+  viewPill: { flexDirection: "row", alignItems: "center", paddingHorizontal: 10, paddingVertical: 6, borderRadius: RADIUS.pill, backgroundColor: "rgba(37,99,235,0.10)" },
+  viewPillText: { color: COLORS.primary, fontSize: 11, fontWeight: "700", marginRight: 2 },
 });

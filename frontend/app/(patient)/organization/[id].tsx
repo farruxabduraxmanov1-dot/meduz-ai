@@ -114,8 +114,19 @@ export default function OrganizationProfile() {
         </View>
       </ScrollView>
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.callBtn} onPress={() => Linking.openURL(`tel:${org.phone.replace(/\s/g, "")}`)} testID="org-call-button">
+        <TouchableOpacity
+          style={styles.callBtn}
+          onPress={() => Linking.openURL(`tel:${org.phone.replace(/\s/g, "")}`)}
+          testID="org-call-button"
+        >
           <MaterialCommunityIcons name="phone" size={20} color={COLORS.primary} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.callBtn}
+          onPress={() => Linking.openURL(`https://maps.google.com/?q=${encodeURIComponent(org.address + ", " + org.city)}`)}
+          testID="org-directions-button"
+        >
+          <MaterialCommunityIcons name="map-marker-radius" size={20} color={COLORS.primary} />
         </TouchableOpacity>
         <GradientButton
           label={tr(language, "bookAppointment")}
@@ -159,6 +170,6 @@ const styles = StyleSheet.create({
   reviewRow: { paddingVertical: SPACING.md, borderBottomWidth: 1, borderBottomColor: COLORS.borderSoft },
   reviewAuthor: { fontSize: 13, fontWeight: "700", color: COLORS.text.primary },
   reviewDate: { fontSize: 11, color: COLORS.text.tertiary, marginTop: 2, marginBottom: 4 },
-  footer: { position: "absolute", left: 0, right: 0, bottom: 0, backgroundColor: COLORS.surface, padding: SPACING.lg, flexDirection: "row", alignItems: "center", borderTopWidth: 1, borderTopColor: COLORS.borderSoft },
+  footer: { position: "absolute", left: 0, right: 0, bottom: 0, backgroundColor: COLORS.surface, padding: SPACING.lg, flexDirection: "row", alignItems: "center", gap: 10, borderTopWidth: 1, borderTopColor: COLORS.borderSoft },
   callBtn: { width: 52, height: 52, borderRadius: 26, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.bg, ...SHADOW.card },
 });

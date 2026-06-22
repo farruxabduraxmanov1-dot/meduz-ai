@@ -115,7 +115,7 @@ export const DOCTORS: Doctor[] = [
   {
     id: "dr-001",
     name: "Dr. Akmal Karimov",
-    specialty: "Cardiologist",
+    specialty: "Kardiolog",
     photo: DOCTOR_PHOTOS[0],
     rating: 4.9,
     reviewsCount: 184,
@@ -135,7 +135,7 @@ export const DOCTORS: Doctor[] = [
   {
     id: "dr-002",
     name: "Dr. Madina Yusupova",
-    specialty: "Pediatrician",
+    specialty: "Pediatr",
     photo: DOCTOR_PHOTOS[6],
     rating: 4.8,
     reviewsCount: 312,
@@ -155,7 +155,7 @@ export const DOCTORS: Doctor[] = [
   {
     id: "dr-003",
     name: "Dr. Bobur Tursunov",
-    specialty: "Neurologist",
+    specialty: "Nevrolog",
     photo: DOCTOR_PHOTOS[1],
     rating: 4.7,
     reviewsCount: 96,
@@ -194,7 +194,7 @@ export const DOCTORS: Doctor[] = [
   {
     id: "dr-005",
     name: "Dr. Sherzod Rahimov",
-    specialty: "Plastic Surgeon",
+    specialty: "Plastik Jarroh",
     photo: DOCTOR_PHOTOS[2],
     rating: 4.8,
     reviewsCount: 87,
@@ -213,7 +213,7 @@ export const DOCTORS: Doctor[] = [
   {
     id: "dr-006",
     name: "Dr. Dilnoza Abdullaeva",
-    specialty: "Gynecologist",
+    specialty: "Ginekolog",
     photo: DOCTOR_PHOTOS[8],
     rating: 4.9,
     reviewsCount: 423,
@@ -233,7 +233,7 @@ export const DOCTORS: Doctor[] = [
   {
     id: "dr-007",
     name: "Dr. Jasur Mamatov",
-    specialty: "ENT Specialist",
+    specialty: "LOR",
     photo: DOCTOR_PHOTOS[3],
     rating: 4.6,
     reviewsCount: 138,
@@ -252,7 +252,7 @@ export const DOCTORS: Doctor[] = [
   {
     id: "dr-008",
     name: "Dr. Aziza Khalilova",
-    specialty: "Endocrinologist",
+    specialty: "Endokrinolog",
     photo: DOCTOR_PHOTOS[9],
     rating: 4.7,
     reviewsCount: 156,
@@ -271,7 +271,7 @@ export const DOCTORS: Doctor[] = [
   {
     id: "dr-009",
     name: "Dr. Otabek Saidov",
-    specialty: "Orthopedic Surgeon",
+    specialty: "Ortoped",
     photo: DOCTOR_PHOTOS[4],
     rating: 4.8,
     reviewsCount: 201,
@@ -290,7 +290,7 @@ export const DOCTORS: Doctor[] = [
   {
     id: "dr-010",
     name: "Dr. Gulnora Tashkentova",
-    specialty: "General Practitioner",
+    specialty: "Umumiy amaliyot shifokori",
     photo: DOCTOR_PHOTOS[6],
     rating: 4.9,
     reviewsCount: 367,
@@ -309,7 +309,7 @@ export const DOCTORS: Doctor[] = [
   {
     id: "dr-011",
     name: "Dr. Rustam Ergashev",
-    specialty: "Pediatric Surgeon",
+    specialty: "Bolalar Jarrohi",
     photo: DOCTOR_PHOTOS[1],
     rating: 4.7,
     reviewsCount: 98,
@@ -328,7 +328,7 @@ export const DOCTORS: Doctor[] = [
   {
     id: "dr-012",
     name: "Dr. Zarina Komilova",
-    specialty: "Psychiatrist",
+    specialty: "Psixiatr",
     photo: DOCTOR_PHOTOS[7],
     rating: 4.8,
     reviewsCount: 142,
@@ -347,7 +347,7 @@ export const DOCTORS: Doctor[] = [
   {
     id: "dr-013",
     name: "Dr. Farrukh Iskandarov",
-    specialty: "Urologist",
+    specialty: "Urolog",
     photo: DOCTOR_PHOTOS[2],
     rating: 4.6,
     reviewsCount: 76,
@@ -366,7 +366,7 @@ export const DOCTORS: Doctor[] = [
   {
     id: "dr-014",
     name: "Dr. Lola Khasanova",
-    specialty: "Ophthalmologist",
+    specialty: "Oftalmolog",
     photo: DOCTOR_PHOTOS[8],
     rating: 4.9,
     reviewsCount: 219,
@@ -385,7 +385,7 @@ export const DOCTORS: Doctor[] = [
   {
     id: "dr-015",
     name: "Dr. Sardor Mirzaev",
-    specialty: "Gastroenterologist",
+    specialty: "Gastroenterolog",
     photo: DOCTOR_PHOTOS[3],
     rating: 4.7,
     reviewsCount: 113,
@@ -404,7 +404,7 @@ export const DOCTORS: Doctor[] = [
   {
     id: "dr-016",
     name: "Dr. Shahnoza Bekova",
-    specialty: "Rheumatologist",
+    specialty: "Revmatolog",
     photo: DOCTOR_PHOTOS[9],
     rating: 4.8,
     reviewsCount: 84,
@@ -423,7 +423,7 @@ export const DOCTORS: Doctor[] = [
   {
     id: "dr-017",
     name: "Dr. Khasan Sobirov",
-    specialty: "Pulmonologist",
+    specialty: "Pulmonolog",
     photo: DOCTOR_PHOTOS[4],
     rating: 4.6,
     reviewsCount: 67,
@@ -442,7 +442,7 @@ export const DOCTORS: Doctor[] = [
   {
     id: "dr-018",
     name: "Dr. Kamola Nizamova",
-    specialty: "Allergist",
+    specialty: "Allergolog",
     photo: DOCTOR_PHOTOS[7],
     rating: 4.8,
     reviewsCount: 121,
@@ -461,7 +461,7 @@ export const DOCTORS: Doctor[] = [
   {
     id: "dr-019",
     name: "Dr. Murod Nazarov",
-    specialty: "Dentist",
+    specialty: "Stomatolog",
     photo: DOCTOR_PHOTOS[1],
     rating: 4.9,
     reviewsCount: 412,
@@ -480,7 +480,7 @@ export const DOCTORS: Doctor[] = [
   {
     id: "dr-020",
     name: "Dr. Asal Ravshanova",
-    specialty: "Nutritionist",
+    specialty: "Nutritsiolog",
     photo: DOCTOR_PHOTOS[8],
     rating: 4.7,
     reviewsCount: 156,
@@ -975,3 +975,172 @@ export const SERVICE_DEMO = {
 
 export const SPECIALTIES = Array.from(new Set(DOCTORS.map((d) => d.specialty))).sort();
 export const CITIES: City[] = ["Tashkent", "Andijan", "Namangan", "Fergana", "Samarkand", "Bukhara"];
+
+// ===== DIAGNOSTICS (medical imaging & tests) =====
+export type Diagnostic = {
+  id: string;
+  name: string;
+  category: "Imaging" | "Cardiac" | "Endoscopy";
+  description: string;
+  price: number; // thousands UZS
+  duration: string;
+  icon: string;
+  image: string;
+  providers: number;
+};
+
+const DIAG_IMG = "https://images.unsplash.com/photo-1576091160550-2173dba999ef";
+
+export const DIAGNOSTICS: Diagnostic[] = [
+  { id: "dg-001", name: "MRT (MRI)", category: "Imaging", description: "Magnit-rezonans tomografiya — yumshoq to'qimalar uchun yuqori aniqlikdagi tasvir.", price: 850, duration: "45 daqiqa", icon: "atom-variant", image: DIAG_IMG, providers: 12 },
+  { id: "dg-002", name: "KT (CT)", category: "Imaging", description: "Kompyuter tomografiyasi — suyak, qon tomir va o'pka tahlili uchun.", price: 600, duration: "20 daqiqa", icon: "scanner", image: DIAG_IMG, providers: 18 },
+  { id: "dg-003", name: "UZI (Ultrasound)", category: "Imaging", description: "Ultratovush diagnostikasi — ichki organlar, bo'yin, qorin, homiladorlik uchun.", price: 220, duration: "30 daqiqa", icon: "waveform", image: DIAG_IMG, providers: 47 },
+  { id: "dg-004", name: "Rentgen (X-ray)", category: "Imaging", description: "Rentgen tekshiruvi — suyak va o'pka kasalliklarini aniqlash.", price: 140, duration: "15 daqiqa", icon: "image-broken-variant", image: DIAG_IMG, providers: 56 },
+  { id: "dg-005", name: "EKG", category: "Cardiac", description: "Elektrokardiogramma — yurak ritmi va ishchanligi tahlili.", price: 90, duration: "10 daqiqa", icon: "heart-pulse", image: DIAG_IMG, providers: 64 },
+  { id: "dg-006", name: "EXOKG (EchoCG)", category: "Cardiac", description: "Yurak ultratovushi — klapanlar, devorlar va qon oqimi.", price: 320, duration: "30 daqiqa", icon: "heart-flash", image: DIAG_IMG, providers: 28 },
+  { id: "dg-007", name: "Endoskopiya", category: "Endoscopy", description: "Yuqori qorin endoskopiyasi (FGDS) — me'da va ichak diagnostikasi.", price: 480, duration: "20 daqiqa", icon: "magnify-plus-outline", image: DIAG_IMG, providers: 14 },
+];
+
+// ===== PROCEDURES (independent medical procedures) =====
+export type Procedure = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  icon: string;
+  homeAvailable: boolean;
+  providers: number;
+};
+
+export const PROCEDURES: Procedure[] = [
+  { id: "pr-001", name: "Inyeksiya", description: "Mushak ichi (i/m) va vena ichi (i/v) inyeksiyalar.", price: 50, icon: "needle", homeAvailable: true, providers: 38 },
+  { id: "pr-002", name: "Kapelnitsa (IV Therapy)", description: "Tomchi infuziya — gidratatsiya, vitamin, dori terapiyasi.", price: 150, icon: "iv-bag", homeAvailable: true, providers: 26 },
+  { id: "pr-003", name: "Bog'lov (Dressing)", description: "Yara, kuyish va operatsiyadan keyingi bog'lovlar.", price: 60, icon: "bandage", homeAvailable: true, providers: 41 },
+  { id: "pr-004", name: "Reabilitatsiya", description: "Insultdan, jarrohlikdan va sport jarohatidan keyingi reabilitatsiya.", price: 130, icon: "run", homeAvailable: true, providers: 19 },
+  { id: "pr-005", name: "Postoperatsion parvarish", description: "Operatsiyadan keyin ko'p kunlik nazorat va parvarish.", price: 180, icon: "hospital-box", homeAvailable: true, providers: 22 },
+];
+
+// ===== HOME CARE SPECIALIST PREVIEW (per-service matched specialist) =====
+export type HomeCareSpecialist = {
+  id: string;
+  name: string;
+  serviceId: string;
+  photo: string;
+  rating: number;
+  reviewsCount: number;
+  yearsExp: number;
+  etaMinutes: number;
+  gender: "male" | "female";
+};
+
+const HC_FEM = "https://images.unsplash.com/photo-1559757175-5700dde675bc";
+const HC_FEM2 = "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d";
+const HC_MALE = "https://images.unsplash.com/photo-1559839734-2b71ea197ec2";
+const HC_MALE2 = "https://images.unsplash.com/photo-1622253692010-333f2da6031d";
+
+export const HOME_CARE_SPECIALISTS: HomeCareSpecialist[] = [
+  { id: "hcs-1", name: "Sevara Kamilova", serviceId: "hc-002", photo: HC_FEM, rating: 4.9, reviewsCount: 121, yearsExp: 8, etaMinutes: 25, gender: "female" },
+  { id: "hcs-2", name: "Aziza Tashkentova", serviceId: "hc-002", photo: HC_FEM2, rating: 4.8, reviewsCount: 96, yearsExp: 6, etaMinutes: 35, gender: "female" },
+  { id: "hcs-3", name: "Dr. Akmal Karimov", serviceId: "hc-001", photo: HC_MALE, rating: 4.9, reviewsCount: 184, yearsExp: 17, etaMinutes: 45, gender: "male" },
+  { id: "hcs-4", name: "Dr. Bobur Tursunov", serviceId: "hc-001", photo: HC_MALE2, rating: 4.7, reviewsCount: 96, yearsExp: 15, etaMinutes: 50, gender: "male" },
+  { id: "hcs-5", name: "Kamol Saidov", serviceId: "hc-003", photo: HC_MALE2, rating: 4.6, reviewsCount: 201, yearsExp: 6, etaMinutes: 20, gender: "male" },
+  { id: "hcs-6", name: "Madina Yusupova", serviceId: "hc-003", photo: HC_FEM, rating: 4.8, reviewsCount: 142, yearsExp: 9, etaMinutes: 22, gender: "female" },
+  { id: "hcs-7", name: "Zarina Komilova", serviceId: "hc-004", photo: HC_FEM2, rating: 4.9, reviewsCount: 73, yearsExp: 9, etaMinutes: 30, gender: "female" },
+  { id: "hcs-8", name: "Otabek Mamatov", serviceId: "hc-004", photo: HC_MALE, rating: 4.7, reviewsCount: 64, yearsExp: 8, etaMinutes: 40, gender: "male" },
+  { id: "hcs-9", name: "Nilufar Abdullaeva", serviceId: "hc-005", photo: HC_FEM, rating: 4.8, reviewsCount: 87, yearsExp: 10, etaMinutes: 28, gender: "female" },
+  { id: "hcs-10", name: "Aziz Tursunov", serviceId: "hc-007", photo: HC_MALE2, rating: 4.7, reviewsCount: 142, yearsExp: 5, etaMinutes: 32, gender: "male" },
+];
+
+export function findSpecialistsForService(serviceId: string, prefer?: "any" | "male" | "female"): HomeCareSpecialist[] {
+  const matched = HOME_CARE_SPECIALISTS.filter((s) => s.serviceId === serviceId);
+  const pool = matched.length > 0 ? matched : HOME_CARE_SPECIALISTS.slice(0, 2);
+  if (!prefer || prefer === "any") return pool;
+  return pool.filter((s) => s.gender === prefer).length > 0 ? pool.filter((s) => s.gender === prefer) : pool;
+}
+
+// Deterministic pseudo-random in [min,max] from a string id
+export function seedRand(id: string, min: number, max: number): number {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  return min + (h % 1000) / 1000 * (max - min);
+}
+
+// ===== HOME CARE ETA (varies by service for realism) =====
+export const HOME_CARE_ETA: Record<string, { min: number; max: number; label: string }> = {
+  "hc-001": { min: 25, max: 45, label: "Doctor Home Visit" },
+  "hc-002": { min: 20, max: 40, label: "Nurse Home Visit" },
+  "hc-003": { min: 15, max: 30, label: "Injection Service" },
+  "hc-004": { min: 30, max: 60, label: "IV Therapy" },
+  "hc-005": { min: 20, max: 35, label: "Dressings" },
+  "hc-006": { min: 25, max: 45, label: "Postoperative Care" },
+  "hc-007": { min: 30, max: 60, label: "Elderly Care" },
+  "hc-008": { min: 25, max: 45, label: "Child Care" },
+  "hc-009": { min: 45, max: 90, label: "Rehabilitation" },
+};
+
+export function computeServiceEta(serviceId: string, address: string = ""): number {
+  const range = HOME_CARE_ETA[serviceId] || { min: 20, max: 45, label: "Home Visit" };
+  // Deterministic variation seeded by service + address
+  const seed = `${serviceId}-${address}`;
+  return Math.round(seedRand(seed, range.min, range.max));
+}
+
+// ===== PHARMACY EXTRAS (delivery flags) =====
+export function pharmacyHas24h(p: { hours: string }) {
+  return p.hours.includes("24/7") || p.hours.includes("24");
+}
+export function pharmacyHasDelivery(id: string) {
+  return seedRand(id + "del", 0, 1) > 0.35;
+}
+export function pharmacyDeliveryEta(id: string) {
+  return Math.round(seedRand(id + "deta", 20, 75));
+}
+
+// ===== DOCTOR PROFILE EXTRAS (education, certificates) =====
+export type DoctorExtras = {
+  education: { school: string; year: string; degree: string }[];
+  certificates: { title: string; org: string; year: string }[];
+  primaryOrganizationId?: string;
+};
+
+export const DOCTOR_EXTRAS: Record<string, DoctorExtras> = {
+  "dr-001": {
+    education: [
+      { school: "Tashkent Medical Academy", year: "2008", degree: "Doctor of Medicine" },
+      { school: "Bakulev Cardiology Center, Moscow", year: "2011", degree: "Interventional Cardiology Fellowship" },
+    ],
+    certificates: [
+      { title: "Board Certification — Cardiology", org: "Ministry of Health, UZ", year: "2012" },
+      { title: "ESC Member", org: "European Society of Cardiology", year: "2016" },
+      { title: "Advanced Cardiac Life Support", org: "AHA", year: "2022" },
+    ],
+    primaryOrganizationId: "org-006",
+  },
+  "dr-002": {
+    education: [
+      { school: "Tashkent Pediatric Medical Institute", year: "2013", degree: "Doctor of Medicine" },
+      { school: "Children's Hospital, Ankara", year: "2015", degree: "Pediatric Residency" },
+    ],
+    certificates: [
+      { title: "Board Certified Pediatrician", org: "Ministry of Health, UZ", year: "2016" },
+      { title: "Neonatal Resuscitation Provider", org: "AAP", year: "2020" },
+    ],
+    primaryOrganizationId: "org-002",
+  },
+};
+
+export function getDoctorExtras(id: string): DoctorExtras {
+  return (
+    DOCTOR_EXTRAS[id] || {
+      education: [
+        { school: "Tashkent Medical Academy", year: "2014", degree: "Doctor of Medicine" },
+        { school: "Tashkent Institute of Postgraduate Medical Education", year: "2017", degree: "Residency" },
+      ],
+      certificates: [
+        { title: "Board Certified Specialist", org: "Ministry of Health, UZ", year: "2018" },
+        { title: "Continuing Medical Education", org: "MedUZ Academy", year: "2024" },
+      ],
+      primaryOrganizationId: undefined,
+    }
+  );
+}
