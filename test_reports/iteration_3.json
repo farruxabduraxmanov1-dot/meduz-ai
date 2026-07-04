@@ -1,0 +1,59 @@
+{
+  "summary": "V3 real-time WebSocket chat verified end-to-end. Backend: 25/25 pytest pass — new /app/backend/tests/test_chat_v3.py adds 12 cases (POST /api/chat/conversations returns sorted 'conv_<a>__<b>' id and is idempotent; GET /api/chat/conversations shape with peer/peer_online/unread/last_message; GET /api/chat/messages sorted asc; POST /api/chat/mark-read 400 on missing fields; WS /api/ws/chat/<user_id> — hello on connect with online_users list, ping→pong, message→message_ack{status:delivered,isMe:true}+persistence to Mongo, typing forwarded A→B, read receipt notifies peer, Claude Sonnet 4.5 auto-reply when peer offline AND sender_role==patient (typing_true → typing_false → message isMe:false with real Claude text), and NO auto-reply when peer is online). V1+V2 regression 13/13 still pass (health, mock-login, ai/chat en/ru/uz, doctor-tool x4 variants, appointments, home-visits legacy+V2). Frontend (390x844 mobile viewport): patient home top-right chat-bubbles icon has testID 'open-inbox' and opens /inbox with empty state 'No conversations yet — Message a doctor, specialist or clinic to start chatting' + inbox icon + green 'Live' pill; Doctor Profile → Message (testID 'doctor-message-btn') opens /chat/dr-001 with header 'Dr. Akmal Karimov', presence text 'Offline', call icon on the right, empty-state 'Start the conversation — Dr. Akmal Karimov will reply as soon as they can', bottom input bar with paperclip (chat-attach), Message… input (chat-input), gradient send button (chat-send); sending 'Hello doctor, I have a mild headache since morning. Should I worry?' → user bubble + timestamp appears immediately, ~10-14s later a real Claude persona reply lands: 'Hello! I'm Dr. Akmal Karimov. A mild headache can have many simple causes like dehydration, stress, or lack of sleep. Have you been drinking enough water today, and did you sleep well last night?' — displayed with the doctor's avatar and timestamp (screenshot /tmp/chat_reply.png). Organization profile /organization/org-001 → Message icon (testID 'org-message-button') opens the chat with peer name '<Org> Reception' (verified for 'Andijan Regional Hospital Reception') using the admin persona and 'Offline' presence. AI Chat V1 welcome card + 4 suggested prompts still render correctly (regression OK).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "app.include_router(api_router) called twice (server.py L357 and L775)", "issue": "The api_router is mounted twice — once before chat routes are attached and once after. FastAPI silently ignores duplicate routes on the same app, but this pattern is fragile: any future route added between the two include_router calls will be registered twice (duplicated in the OpenAPI schema and can trigger 'Duplicate Operation ID' warnings). Recommend removing the first include_router at L357 and only mounting after all routes are declared. Not causing any functional failure right now."},
+      {"endpoint": "CORSMiddleware added AFTER include_router (server.py L777)", "issue": "FastAPI middlewares should be added BEFORE the app starts serving; adding them after routes are mounted works today but is not the documented order. Move CORSMiddleware.add_middleware to run right after `app = FastAPI(...)`."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "chat/[peerId].tsx — user (isMe) bubble on web preview", "issue": "LinearGradient (#2563EB→#7C3AED) for the sender's bubble renders with reduced gradient visibility on React Native Web — in the mobile web preview both peer and self bubbles look nearly the same light-blue tone (visible in /tmp/chat_reply.png). The gradient works fine on native iOS/Android via expo-linear-gradient; cosmetic web-only fallback. Reference: /app/frontend/app/chat/[peerId].tsx:165.", "testID": "chat-msg-* (n/a)", "priority": "LOW"},
+      {"component": "chat/[peerId].tsx — typing indicator visibility on desktop web preview", "issue": "'typing…' indicator is rendered as a FlatList footer (ActivityIndicator + 'typing…' text) instead of in the header sub-title. Spec asked for the header to show 'typing…' after the presence text. Function is present and receives the WS 'typing' frames (verified via backend test_typing_forwarded_between_peers), but placing it in the header would be more visible. Reference: /app/frontend/app/chat/[peerId].tsx:197-206.", "testID": "n/a", "priority": "LOW"},
+      {"component": "inbox.tsx", "issue": "Empty state text reads 'Message a doctor, specialist or clinic to start chatting.' — matches spec. No missing testIDs (each row uses 'convo-<conversation_id>'). Fresh browser sessions get a new mock user_id so inbox always looks empty on reload — this is expected for the mock-auth demo but might confuse investors reloading the tab.", "testID": "convo-<id>", "priority": "INFO"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "chat/[peerId].tsx", "issues": ["Peer's presence indicator in the header only shows text ('Online'/'Offline'). A green/gray dot next to the avatar (as spec asks in inbox rows) would be a nice touch here too."]}
+    ],
+    "react_native_issues": [
+      {"component": "React Native Web deprecation", "issue": "'shadow*' style props are deprecated; use 'boxShadow' — repeated warnings in the browser console originating from /app/frontend/src/theme.ts (SHADOW.card/floating). Same as reported in iteration_2; not blocking but noisy."},
+      {"component": "React Native Web deprecation", "issue": "'props.pointerEvents is deprecated. Use style.pointerEvents' — emitted from third-party lib (LinearGradient or similar); cosmetic."}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_chat_v3.py",
+    "/app/backend/tests/test_meduz_backend.py",
+    "/app/backend/tests/conftest.py",
+    "/app/test_reports/pytest/chat_v3_results.xml",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "(Optional polish) Move 'typing…' indicator from FlatList footer into the header sub-title so it visually replaces 'Online/Offline' as the spec suggests. Data plumbing already works; it's just placement.",
+    "(Optional polish) Add a small presence dot (green/gray) to the chat header avatar, mirroring the inbox row's presence dot for consistency.",
+    "(Backend cleanup) Remove the duplicate `app.include_router(api_router)` at server.py:357 and add CORSMiddleware before include_router. Currently harmless but violates FastAPI's documented ordering.",
+    "(Cosmetic — carried from iteration_2) Migrate shadow* style props in /app/frontend/src/theme.ts to boxShadow to silence the React Native Web console warnings.",
+    "(Web-preview polish) LinearGradient sender bubble looks flat on RN Web — verify visually or fall back to a solid #4F46E5 on web via Platform.select if the gradient investor demo is delivered via browser."
+  ],
+  "critical_code_review_comments": [
+    "Chat backend is fully async (motor + FastAPI WebSocket), uses uuid for message ids, no _id leakage from Mongo (chat_messages docs use a separate 'id' field, and chat_conversations uses conversation_id as the _id but list_conversations projects it out as 'conversation_id' via c.get('_id')).",
+    "ConnectionManager correctly closes previous socket on reconnect for the same user_id — good for reloads.",
+    "Auto-reply is single-flight per conversation (_auto_reply_tasks dict + prev.cancel()) — prevents thundering-herd of Claude calls.",
+    "Persona prompts (doctor/service/admin/patient) are language-adaptive: 'Reply in the same language as the patient (English, Russian, or Uzbek)'. Verified in Live test — English question → English reply.",
+    "Claude reply length is capped to 600 chars with a graceful ellipsis + word-boundary trim (server.py:508-509). Good.",
+    "Frontend uses process.env.EXPO_PUBLIC_BACKEND_URL consistently (chat store subscribes to ws:// or wss:// derived from it).",
+    "Unread badge on patient home chat icon requires the ChatProvider to be listening at app-root even when the user is not on the /chat/* screen. Please confirm the socket is opened in _layout.tsx so unread counters increment while the user is on the home tab. (Not verified in this pass — would require a two-tab test.)",
+    "server.py currently 795 lines; borderline. Consider splitting the WEBSOCKET CHAT block (~430 lines) into /app/backend/chat.py for maintainability."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_chat_v3.py (new — 12 cases covering REST + WS + Claude auto-reply)",
+    "/app/backend/tests/conftest.py (new — auto-marks async test functions with @pytest.mark.asyncio for STRICT mode)"
+  ],
+  "success_rate": {"backend": "100% (25/25 pytest: 13 V1+V2 + 12 V3 chat)", "frontend": "~95% — all V3 flows in the spec verified (open-inbox icon, inbox empty state, Doctor Profile Message → chat with Claude reply, Organization Message → chat, regression AI Chat). Two LOW-priority UX polish items (typing indicator placement, gradient bubble on web)."},
+  "seed_data_creation": "Backend tests insert TEST_-prefixed rows into chat_conversations + chat_messages (safe demo data; conversation_ids like 'conv_TEST_u1_<hex>__dr-001'). No production seeds touched.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "V3 chat testIDs discovered: open-inbox (patient home top-right bell), convo-<conversation_id> (inbox row), doctor-message-btn, org-message-button, hc-msg-specialist, chat-back, chat-call, chat-attach, chat-input, chat-send. Correct google auth testID is 'google-signin-button' (NOT 'auth-google-button' as noted in iteration_2 context — updating here). WebSocket endpoint is ws://localhost:8001/api/ws/chat/<user_id> (path prefix /api is required for the k8s ingress). Auto-reply latency: ~1.5-3.5s typing_on + 1.8-3.2s typing_off + Claude round-trip 3-8s → total ~8-15s. Fresh browser sessions get a new mock user_id, so inbox appears empty across reloads (expected behavior of mock auth).",
+  "rca_of_issue": "No functional bugs found in V3 chat. Two backend code-hygiene items (duplicate include_router; CORS added after routes) are cosmetic only. Two frontend polish items: (a) typing indicator is rendered as a list footer instead of in the header sub-title as the spec asks; the WS data is already wired up correctly, only the render location differs; (b) LinearGradient for the sender bubble looks flat on the web preview but is correct on native. All spec-critical behavior — persistence, sorted conversation ids, idempotency, Claude Sonnet 4.5 persona replies in the same language as the patient, delivered/read receipts, typing forwarding between two connected peers, and ping/pong — all verified against the public preview URL."
+}

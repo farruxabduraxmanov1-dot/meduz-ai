@@ -69,6 +69,19 @@ export default function HomeCare() {
   );
   const previewSpecialist = specialists[0];
 
+  const openSpecialistChat = () => {
+    if (!submitted) return;
+    router.push({
+      pathname: "/chat/[peerId]",
+      params: {
+        peerId: "sp-001",
+        peerName: submitted.specialistName,
+        peerRole: "service",
+        peerAvatar: submitted.specialistPhoto,
+      },
+    });
+  };
+
   const submit = async () => {
     const eta = computeServiceEta(selectedService, address);
     const spec = specialists[0];
@@ -149,7 +162,7 @@ export default function HomeCare() {
                 <MaterialCommunityIcons name="phone" size={18} color={COLORS.primary} />
                 <Text style={styles.actionText}>Call</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.actionBtn} testID="hc-msg-specialist">
+              <TouchableOpacity style={styles.actionBtn} onPress={openSpecialistChat} testID="hc-msg-specialist">
                 <MaterialCommunityIcons name="message-text" size={18} color={COLORS.primary} />
                 <Text style={styles.actionText}>Message</Text>
               </TouchableOpacity>

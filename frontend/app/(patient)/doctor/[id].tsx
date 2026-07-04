@@ -130,7 +130,21 @@ export default function DoctorProfile() {
       </ScrollView>
 
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.msgBtn} onPress={() => router.push("/(patient)/ai-chat")}>
+        <TouchableOpacity
+          style={styles.msgBtn}
+          onPress={() =>
+            router.push({
+              pathname: "/chat/[peerId]",
+              params: {
+                peerId: doctor.id,
+                peerName: doctor.name,
+                peerRole: "doctor",
+                peerAvatar: doctor.photo,
+              },
+            })
+          }
+          testID="doctor-message-btn"
+        >
           <MaterialCommunityIcons name="message-text" size={22} color={COLORS.primary} />
         </TouchableOpacity>
         <GradientButton

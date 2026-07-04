@@ -18,10 +18,12 @@ import { COLORS, SPACING, RADIUS, SHADOW } from "@/src/theme";
 import { tr } from "@/src/i18n";
 import { useAppState } from "@/src/store/app-state";
 import { DOCTORS, ORGANIZATIONS } from "@/src/data/demo";
+import { useChat } from "@/src/store/chat";
 
 export default function PatientDashboard() {
   const router = useRouter();
   const { language, user } = useAppState();
+  const { totalUnread } = useChat();
   const featuredDoctors = DOCTORS.filter((d) => d.featured).slice(0, 4);
   const featuredOrgs = ORGANIZATIONS.filter((o) => o.featured).slice(0, 3);
 
@@ -53,9 +55,13 @@ export default function PatientDashboard() {
               <Text style={styles.userName}>{user?.name || "Guest"}</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.bell} onPress={() => router.push("/(patient)/profile")} testID="open-settings">
-            <Ionicons name="notifications-outline" size={20} color={COLORS.text.primary} />
-            <View style={styles.dot} />
+          <TouchableOpacity style={styles.bell} onPress={() => router.push("/inbox" as any)} testID="open-inbox">
+            <Ionicons name="chatbubbles-outline" size={20} color={COLORS.text.primary} />
+            {totalUnread > 0 && (
+              <View style={styles.unreadDot}>
+                <Text style={styles.unreadCount}>{totalUnread > 9 ? "9+" : totalUnread}</Text>
+              </View>
+            )}
           </TouchableOpacity>
         </View>
 
@@ -229,6 +235,8 @@ const styles = StyleSheet.create({
   userName: { fontSize: 16, fontWeight: "700", color: COLORS.text.primary, marginTop: 2 },
   bell: { width: 44, height: 44, borderRadius: 22, backgroundColor: COLORS.surface, alignItems: "center", justifyContent: "center", ...SHADOW.card },
   dot: { position: "absolute", top: 12, right: 13, width: 8, height: 8, borderRadius: 4, backgroundColor: COLORS.danger },
+  unreadDot: { position: "absolute", top: 6, right: 4, minWidth: 18, height: 18, borderRadius: 9, paddingHorizontal: 4, backgroundColor: COLORS.danger, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: COLORS.surface },
+  unreadCount: { color: "#fff", fontSize: 10, fontWeight: "800" },
   aiWrap: { marginHorizontal: SPACING.xl, marginTop: SPACING.sm, borderRadius: RADIUS.xl, ...SHADOW.floating },
   aiCard: { padding: SPACING.xl, borderRadius: RADIUS.xl },
   aiHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },

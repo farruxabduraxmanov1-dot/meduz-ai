@@ -8,6 +8,7 @@ import { Card, ModuleCard, BarChart, Tag, MaterialCommunityIcons, RatingStars } 
 import { COLORS, SPACING, RADIUS, SHADOW } from "@/src/theme";
 import { tr } from "@/src/i18n";
 import { useAppState } from "@/src/store/app-state";
+import { useChat } from "@/src/store/chat";
 import { ADMIN_DEMO } from "@/src/data/demo";
 
 const MONTHS = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
@@ -15,6 +16,7 @@ const MONTHS = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
 export default function AdminDashboard() {
   const router = useRouter();
   const { language, setRole } = useAppState();
+  const { totalUnread } = useChat();
   const a = ADMIN_DEMO;
 
   return (
@@ -59,6 +61,10 @@ export default function AdminDashboard() {
           <View style={{ flexDirection: "row", gap: SPACING.md }}>
             <ModuleCard title={tr(language, "analytics")} description="Visits & revenue" icon="chart-line" color="#10B981" bg="rgba(16,185,129,0.10)" onPress={() => router.push("/(admin)/analytics")} testID="admin-analytics" />
             <ModuleCard title={tr(language, "marketing")} description="Promotions & ads" icon="bullhorn" color="#EC4899" bg="rgba(236,72,153,0.10)" onPress={() => router.push("/(admin)/marketing")} testID="admin-marketing" />
+          </View>
+          <View style={{ flexDirection: "row", gap: SPACING.md }}>
+            <ModuleCard title="Inbox" description={totalUnread > 0 ? `${totalUnread} unread` : "Patient inquiries"} icon="chat-processing" color="#F59E0B" bg="rgba(245,158,11,0.10)" onPress={() => router.push("/inbox" as any)} testID="admin-inbox" />
+            <View style={{ flex: 1 }} />
           </View>
         </View>
 

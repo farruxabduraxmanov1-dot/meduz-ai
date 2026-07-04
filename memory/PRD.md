@@ -37,6 +37,13 @@ FastAPI app at `/app/backend/server.py`. Endpoints:
 - Large rounded corners, premium spacing, modern icons (MaterialCommunityIcons + Ionicons)
 - Medical Jellyfish concept logo as a premium custom SVG (gradient circle + medical cross + tentacles) rendered with `react-native-svg`
 
+## V3 Enhancements (July 2026) — Real-time Chat
+- **WebSocket-powered real-time chat** with Claude Sonnet 4.5 persona-driven auto-reply
+- Pairs supported: Patient ↔ Doctor, Patient ↔ Home Care Specialist, Patient ↔ Clinic Reception (Organization Admin)
+- Features: text messages, typing indicators, delivered/read receipts (single/double checks with color), online presence dots, unread badges, MongoDB persistence
+- Entry points: **Message** button on Doctor Profile, Organization Profile, Home Care success screen; **Inbox** icon on Patient home; **Inbox** module tile on Doctor / Admin / Service Provider dashboards
+- Backend endpoints: `WS /api/ws/chat/{user_id}`, `POST /api/chat/conversations`, `GET /api/chat/conversations`, `GET /api/chat/messages`, `POST /api/chat/mark-read`
+
 ## V2 Enhancements (June 2026)
 - **Premium SVG Jellyfish logo** (replaces icon-based placeholder) — used on splash, AI chat, auth, role selection
 - **Uzbek localized specialties** in demo data (Kardiolog, Pediatr, Nevrolog, Stomatolog, LOR, Ginekolog, etc.)

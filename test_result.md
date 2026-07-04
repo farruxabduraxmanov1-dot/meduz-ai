@@ -273,6 +273,10 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Real-time WebSocket chat (patient ↔ doctor / service / admin)"
+    - "Claude Sonnet 4.5 persona auto-reply"
+    - "Chat inbox, unread badge, presence dots"
+    - "Typing indicator + delivered/read receipts"
     - "AI Chat ChatGPT-style keyboard handling"
     - "Home Care V2 — gender preference + specialist preview + dynamic ETA"
     - "Doctor Profile — Education + Certificates + Workplaces (Primary tag)"
@@ -284,6 +288,38 @@ test_plan:
   test_priority: "high_first"
 
 agent_communication:
+    - agent: "main"
+      message: |
+        V3 upgrades complete — Real-time WebSocket Chat + Claude Sonnet 4.5 persona auto-reply.
+
+        Backend added:
+        - `WS /api/ws/chat/{user_id}` — full WebSocket manager with presence, typing, read receipts, auto-reply
+        - `POST /api/chat/conversations` — ensures a conversation exists
+        - `GET /api/chat/conversations?user_id=...` — inbox list with unread counts + peer_online
+        - `GET /api/chat/messages?conversation_id=...` — full history
+        - `POST /api/chat/mark-read` — mark all as read
+        - Claude Sonnet 4.5 persona auto-reply for offline peers (Doctor / Home Care / Reception personas)
+        - Messages persisted in MongoDB (`chat_messages`, `chat_conversations`)
+
+        Frontend added:
+        - `/app/frontend/src/store/chat.tsx` — global ChatProvider (WebSocket client, reconnect, presence, typing, unread, persistence)
+        - `/app/frontend/app/chat/[peerId].tsx` — shared chat screen (all roles)
+        - `/app/frontend/app/inbox.tsx` — shared inbox list (all roles)
+        - Root layout wrapped in `<ChatProvider>`
+        - Patient home top-right: chat icon + unread badge → `/inbox`
+        - Doctor / Admin / Service dashboards: Inbox module tile with unread text
+        - Doctor Profile: Message button → chat with doctor
+        - Organization Profile: new Message button → chat with `admin-{orgId}` (Reception persona)
+        - Home Care success: Message button → chat with `sp-001` (Home Care Nurse persona)
+
+        Verified E2E via screenshot flow:
+        - WS connects, HELLO frame received, presence dot updates
+        - Message sent → optimistic bubble → ack → Claude persona typing → real reply displayed with avatar
+        - Inbox shows conversation with unread badge; opening chat marks-read
+        - Backend logs confirm WS accept + LiteLLM completion + Mongo writes/reads
+
+        Please run E2E frontend tests for the chat V3 flows plus regression check on V1/V2 features.
+
     - agent: "main"
       message: |
         V2 upgrades complete. All V1 features intact. Key V2 changes shipped:

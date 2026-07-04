@@ -123,6 +123,23 @@ export default function OrganizationProfile() {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.callBtn}
+          onPress={() =>
+            router.push({
+              pathname: "/chat/[peerId]",
+              params: {
+                peerId: `admin-${org.id}`,
+                peerName: `${org.name} Reception`,
+                peerRole: "admin",
+                peerAvatar: org.logo,
+              },
+            })
+          }
+          testID="org-message-button"
+        >
+          <MaterialCommunityIcons name="message-text" size={20} color={COLORS.primary} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.callBtn}
           onPress={() => Linking.openURL(`https://maps.google.com/?q=${encodeURIComponent(org.address + ", " + org.city)}`)}
           testID="org-directions-button"
         >

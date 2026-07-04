@@ -24,6 +24,7 @@ const URGENCY: Record<string, string> = { HIGH: COLORS.danger, MEDIUM: COLORS.wa
 export default function DoctorDashboard() {
   const router = useRouter();
   const { language, signOut, setRole } = useAppState();
+  const { totalUnread } = useChat();
   const d = DOCTOR_DEMO;
 
   return (
@@ -89,8 +90,8 @@ export default function DoctorDashboard() {
             <ModuleCard title={tr(language, "aiForDoctors")} description="AI clinical assistant" icon="robot-happy" color="#EC4899" bg="rgba(236,72,153,0.10)" onPress={() => router.push("/(doctor)/ai-assistant")} testID="doc-ai" />
           </View>
           <View style={{ flexDirection: "row", gap: SPACING.md }}>
-            <ModuleCard title="Reviews" description={`${d.reviewsCount} patient reviews`} icon="star-circle" color="#F59E0B" bg="rgba(245,158,11,0.10)" onPress={() => router.push("/(doctor)/profile")} testID="doc-reviews" />
-            <ModuleCard title="Profile" description="Edit profile & prices" icon="account-cog" color="#0EA5E9" bg="rgba(14,165,233,0.10)" onPress={() => router.push("/(doctor)/profile")} testID="doc-profile" />
+            <ModuleCard title="Inbox" description={totalUnread > 0 ? `${totalUnread} unread` : "Patient messages"} icon="chat-processing" color="#0EA5E9" bg="rgba(14,165,233,0.10)" onPress={() => router.push("/inbox" as any)} testID="doc-inbox" />
+            <ModuleCard title="Profile" description="Edit profile & prices" icon="account-cog" color="#F59E0B" bg="rgba(245,158,11,0.10)" onPress={() => router.push("/(doctor)/profile")} testID="doc-profile" />
           </View>
         </View>
 

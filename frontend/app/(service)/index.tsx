@@ -8,11 +8,13 @@ import { Card, ModuleCard, MaterialCommunityIcons, Tag, RatingStars } from "@/sr
 import { COLORS, SPACING, RADIUS, SHADOW } from "@/src/theme";
 import { tr } from "@/src/i18n";
 import { useAppState } from "@/src/store/app-state";
+import { useChat } from "@/src/store/chat";
 import { SERVICE_DEMO } from "@/src/data/demo";
 
 export default function ServiceDashboard() {
   const router = useRouter();
   const { language, setRole } = useAppState();
+  const { totalUnread } = useChat();
   const s = SERVICE_DEMO;
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
@@ -63,7 +65,7 @@ export default function ServiceDashboard() {
           </View>
           <View style={{ flexDirection: "row", gap: SPACING.md }}>
             <ModuleCard title={tr(language, "gallery")} description="Showcase your work" icon="image-multiple" color="#7C3AED" bg="rgba(124,58,237,0.10)" onPress={() => router.push("/(service)/gallery")} testID="svc-gallery" />
-            <ModuleCard title={tr(language, "reviews")} description={`${s.rating} ★`} icon="star-circle" color="#F59E0B" bg="rgba(245,158,11,0.10)" onPress={() => router.push("/(service)/orders")} testID="svc-reviews" />
+            <ModuleCard title="Inbox" description={totalUnread > 0 ? `${totalUnread} unread` : "Client messages"} icon="chat-processing" color="#F59E0B" bg="rgba(245,158,11,0.10)" onPress={() => router.push("/inbox" as any)} testID="svc-inbox" />
           </View>
         </View>
 
