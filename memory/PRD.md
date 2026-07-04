@@ -45,7 +45,7 @@ FastAPI app at `/app/backend/server.py`. Endpoints:
 - Backend endpoints: `WS /api/ws/chat/{user_id}`, `POST /api/chat/conversations`, `GET /api/chat/conversations`, `GET /api/chat/messages`, `POST /api/chat/mark-read`
 
 ## V2 Enhancements (June 2026)
-- **Premium SVG Jellyfish logo** (replaces icon-based placeholder) — used on splash, AI chat, auth, role selection
+- **Premium MedUZ AI branded logo (jellyfish + medical cross)** — bitmap PNG asset with transparent background, includes full wordmark version for language/splash and icon-only variant for headers/badges. Rendered via `<Image>` in `JellyfishLogo` component.
 - **Uzbek localized specialties** in demo data (Kardiolog, Pediatr, Nevrolog, Stomatolog, LOR, Ginekolog, etc.)
 - **Dedicated Doctor Profile screen** (before booking) with: Education, Certificates, multiple Workplaces (Primary tag), languages, reviews
 - **Organization profile** with 3 tabs (Doctors / Departments / Reviews) showing linked doctors with rating and specialty — proves cross-listing of doctors at multiple orgs

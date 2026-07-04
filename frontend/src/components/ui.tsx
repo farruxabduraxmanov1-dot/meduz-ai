@@ -4,7 +4,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  StyleSheet,
   Image,
   ScrollView,
   ViewStyle,
@@ -12,78 +11,54 @@ import {
   StyleProp,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import Svg, { Defs, LinearGradient as SvgGradient, Stop, Path, Circle, Rect, G } from "react-native-svg";
 import { MaterialCommunityIcons, Ionicons, Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 
 import { COLORS, RADIUS, SHADOW, SPACING } from "@/src/theme";
 
-// ====== JellyfishLogo — premium medical-tech mark (custom SVG) ======
+// ====== JellyfishLogo — premium medical-tech mark (real branded image) ======
+// Variants:
+//   - "icon" (default): jellyfish head + medical cross only (transparent bg) — used on badges, headers, cards
+//   - "full": full MedUZ AI logo with wordmark + tagline + icons row — used on splash / language / auth heroes
+const LOGO_ICON = require("../../assets/images/meduz-logo-icon.png");
+const LOGO_FULL = require("../../assets/images/meduz-logo-full.png");
+
 export function JellyfishLogo({
   size = 96,
   glow = true,
   monochrome = false,
+  variant = "icon",
 }: {
   size?: number;
   glow?: boolean;
   monochrome?: boolean;
+  variant?: "icon" | "full";
 }) {
-  const id = React.useId().replace(/[^a-zA-Z0-9]/g, "");
+  // The icon PNG has aspect ratio ~703:627 (roughly 1.12:1). For icon variant use square.
+  // For full logo, keep aspect ratio 1:1 (source is 1254x1254 with wordmark inside).
+  const source = variant === "full" ? LOGO_FULL : LOGO_ICON;
+  const aspect = variant === "full" ? 1 : 703 / 627;
+  const width = size;
+  const height = variant === "full" ? size : size / aspect;
   return (
     <View
       style={{
-        width: size,
-        height: size,
+        width,
+        height,
         alignItems: "center",
         justifyContent: "center",
         ...(glow ? SHADOW.floating : {}),
       }}
       testID="jellyfish-logo"
     >
-      <Svg width={size} height={size} viewBox="0 0 200 200">
-        <Defs>
-          <SvgGradient id={`bg-${id}`} x1="0" y1="0" x2="1" y2="1">
-            <Stop offset="0" stopColor={monochrome ? "#FFFFFF" : "#3B82F6"} stopOpacity="1" />
-            <Stop offset="0.55" stopColor={monochrome ? "#FFFFFF" : "#6366F1"} stopOpacity="1" />
-            <Stop offset="1" stopColor={monochrome ? "#FFFFFF" : "#7C3AED"} stopOpacity="1" />
-          </SvgGradient>
-          <SvgGradient id={`dome-${id}`} x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0" stopColor="#FFFFFF" stopOpacity="0.95" />
-            <Stop offset="1" stopColor="#FFFFFF" stopOpacity="0.65" />
-          </SvgGradient>
-          <SvgGradient id={`tent-${id}`} x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0" stopColor="#FFFFFF" stopOpacity="0.9" />
-            <Stop offset="1" stopColor="#FFFFFF" stopOpacity="0.15" />
-          </SvgGradient>
-        </Defs>
-
-        {/* Soft circular background */}
-        <Circle cx={100} cy={100} r={96} fill={`url(#bg-${id})`} />
-
-        {/* Inner highlight ring */}
-        <Circle cx={100} cy={92} r={70} fill="none" stroke="#FFFFFF" strokeOpacity="0.18" strokeWidth={2} />
-
-        {/* Jellyfish dome */}
-        <Path
-          d="M 50 110 C 50 60, 75 40, 100 40 C 125 40, 150 60, 150 110 C 138 118, 128 110, 118 116 C 108 122, 92 122, 82 116 C 72 110, 62 118, 50 110 Z"
-          fill={`url(#dome-${id})`}
-        />
-
-        {/* Tentacles — wavy gradient lines */}
-        <G strokeLinecap="round" fill="none" strokeWidth={3.5}>
-          <Path d="M 60 116 C 56 130, 64 138, 58 152 C 64 162, 56 168, 62 178" stroke={`url(#tent-${id})`} />
-          <Path d="M 78 121 C 74 138, 82 148, 76 162 C 82 172, 74 178, 80 188" stroke={`url(#tent-${id})`} />
-          <Path d="M 100 124 C 100 142, 100 158, 100 174 C 100 184, 100 188, 100 192" stroke={`url(#tent-${id})`} />
-          <Path d="M 122 121 C 126 138, 118 148, 124 162 C 118 172, 126 178, 120 188" stroke={`url(#tent-${id})`} />
-          <Path d="M 140 116 C 144 130, 136 138, 142 152 C 136 162, 144 168, 138 178" stroke={`url(#tent-${id})`} />
-        </G>
-
-        {/* Medical cross inside dome */}
-        <G opacity="0.95">
-          <Rect x="93" y="62" width="14" height="36" rx="3" fill="#FFFFFF" />
-          <Rect x="82" y="73" width="36" height="14" rx="3" fill="#FFFFFF" />
-        </G>
-      </Svg>
+      <Image
+        source={source}
+        resizeMode="contain"
+        style={[
+          { width, height },
+          monochrome ? { tintColor: "#FFFFFF", opacity: 0.95 } : null,
+        ]}
+      />
     </View>
   );
 }

@@ -23,9 +23,8 @@ export default function LanguageScreen() {
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       <ScrollView contentContainerStyle={{ padding: SPACING.xl, paddingTop: SPACING.xxl }}>
         <View style={styles.header}>
-          <JellyfishLogo size={64} />
+          <JellyfishLogo size={200} variant="full" glow={false} />
           <Text style={styles.title}>{tr(picked, "chooseLanguage")}</Text>
-          <Text style={styles.sub}>MedUZ AI</Text>
         </View>
 
         <View style={{ marginTop: SPACING.xxxl, gap: SPACING.md }}>
