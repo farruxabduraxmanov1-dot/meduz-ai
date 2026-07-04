@@ -354,8 +354,6 @@ async def create_home_visit(req: HomeVisitRequest):
     )
 
 
-app.include_router(api_router)
-
 # ============== WEBSOCKET CHAT ==============
 
 class ChatMessage(BaseModel):
