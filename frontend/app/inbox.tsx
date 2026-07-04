@@ -6,7 +6,9 @@ import { useRouter } from "expo-router";
 
 import { COLORS, SPACING, RADIUS, SHADOW } from "@/src/theme";
 import { MaterialCommunityIcons, ScreenHeader, Tag } from "@/src/components/ui";
-import { useChat } from "@/src/store/chat";function formatWhen(iso?: string | null) {
+import { useChat } from "@/src/store/chat";
+
+function formatWhen(iso?: string | null) {
   if (!iso) return "";
   const d = new Date(iso);
   const now = new Date();

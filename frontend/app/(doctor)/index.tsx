@@ -17,6 +17,7 @@ import {
 import { COLORS, SPACING, RADIUS, SHADOW } from "@/src/theme";
 import { tr } from "@/src/i18n";
 import { useAppState } from "@/src/store/app-state";
+import { useChat } from "@/src/store/chat";
 import { DOCTOR_DEMO } from "@/src/data/demo";
 
 const URGENCY: Record<string, string> = { HIGH: COLORS.danger, MEDIUM: COLORS.warning, LOW: COLORS.success };

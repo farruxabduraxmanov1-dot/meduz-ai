@@ -1,0 +1,43 @@
+{
+  "summary": "Regression pass after the Doctor Dashboard hotfix (missing `import { useChat } from '@/src/store/chat'` at app/(doctor)/index.tsx and formatting fix at app/inbox.tsx:9). Confirmed the imports are now present and code is clean. Backend regression: 25/25 pytest pass (13 V1+V2 + 12 V3 chat) — no regression from the frontend-only hotfix. Frontend regression on mobile viewport 390x844: all 4 role dashboards render WITHOUT any red-screen / render error. (1) Patient Dashboard renders with 6 module tiles (AI Chat, Doctors, Medical Organizations, Pharmacies, Medical Services, Home Medical Assistance) + inbox bell (open-inbox) + start-ai-consultation-card + Featured Doctors row. (2) Doctor Dashboard renders with 'Good morning · Dr. Akmal Karimov · Cardiologist' header, 3-stat row (7 Today / 1750k Earnings / 4.9 Rating), Next appointment gradient card (10:30 Aziza Karimova · Follow-up: Hypertension), and 6 module tiles including Inbox (doc-inbox testID) which uses totalUnread from the newly-imported useChat — confirmed no crash. (3) Admin Dashboard renders with 'Admin Console · Medion Private Clinic', 3-stat row (54 Active doctors / 12,480 patients / 3,120 visits), and Manage Doctors + Departments + Analytics + Marketing Tools + Inbox tiles. (4) Service Dashboard renders with 'Sevara Kamilova · Home Nurse' header, MONTH INCOME 18,600,000 UZS card, and Orders / Income / Gallery / Inbox tiles + Active orders list. V3 chat regression: patient home 'open-inbox' → /inbox opens with 'Live' pill (WS connected), one prior conversation with Dr. Akmal Karimov (unread=1) + Andijan Regional Hospital Reception (empty). Doctor list → Dr. Akmal card → Doctor Profile V2 shows Education + Certificates + Workplaces (with Primary tag on Andijan Regional Hospital) — no crash. Message button (doctor-message-btn) → /chat/dr-001 → sent 'Hello doctor, quick question about my headache' → user bubble + timestamp appeared immediately → ~15s later Claude Sonnet 4.5 persona reply arrived: 'Hello! I'm Dr. Akmal Karimov. I'm sorry to hear you're having a headache. How long have you been experiencing it, and is it accompanied by any other symptoms like nausea, sensitivity to light, or fever?' — verified in /tmp/r_chat_reply.png. Language screen shows the FULL branded logo (jellyfish + MedUZ AI wordmark + 'SIZNING INTELLEKTUAL TIBBIY YORDAMCHINGIZ' tagline + 5-icons row) — verified in /tmp/01_language.png. No page errors in browser, no console errors beyond the pre-existing (harmless) shadow*/pointerEvents deprecation warnings. Deprecated packages check: none of expo-av / expo-barcode-scanner / expo-background-fetch are present in the codebase.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "server.py — duplicate include_router + CORS ordering", "issue": "Carried from iteration_3. app.include_router(api_router) is called twice (L357 and L775) and CORSMiddleware is added after the routers. Currently harmless but violates FastAPI's documented ordering — future routes added between the two calls will be duplicated. Recommend consolidating."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": [
+      {"component": "React Native Web deprecation (shadow* → boxShadow)", "issue": "Repeated console warnings from /app/frontend/src/theme.ts (SHADOW.card/floating) — cosmetic, carried from iteration_2/3. Not blocking."},
+      {"component": "React Native Web deprecation (props.pointerEvents)", "issue": "Emitted from LinearGradient/third-party — cosmetic, carried from earlier iterations."},
+      {"component": "Expo version drift (non-blocking)", "issue": "expo@54.0.34 vs expected 54.0.35, expo-font@14.0.11 vs 14.0.12, expo-router@6.0.23 vs 6.0.24, react-native-keyboard-controller@1.18.6 vs 1.18.5. Expo doctor prints a warning on startup but app compiles/runs fine. Consider `npx expo install --fix` next iteration."}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_meduz_backend.py",
+    "/app/backend/tests/test_chat_v3.py",
+    "/app/backend/tests/conftest.py",
+    "/app/test_reports/pytest/iteration_4_regression.xml"
+  ],
+  "action_items": [
+    "(Optional) Run `cd /app/frontend && npx expo install --fix` to silence the Expo doctor version-drift warning (expo 54.0.34→54.0.35, expo-font, expo-router, keyboard-controller).",
+    "(Carry-over cosmetic) Migrate SHADOW.card/floating in /app/frontend/src/theme.ts from shadow* props to boxShadow to silence RN Web console warnings.",
+    "(Carry-over backend cleanup) Remove the duplicate app.include_router(api_router) at server.py:357 and move CORSMiddleware to the top of app init."
+  ],
+  "critical_code_review_comments": [
+    "Hotfix verified — /app/frontend/app/(doctor)/index.tsx:20 now imports `useChat` from `@/src/store/chat` and is consumed correctly at line 28 with `const { totalUnread } = useChat();`. The Inbox tile description reads `totalUnread > 0 ? '${totalUnread} unread' : 'Patient messages'` which is defensive against undefined.",
+    "/app/frontend/app/inbox.tsx:9 correctly imports `useChat` on its own line and `function formatWhen` is at L11 — the merge glitch is gone.",
+    "No red-screen or PageError events observed on any of the 4 dashboards during navigation (patient → inbox → doctors → doctor profile → chat → back → role switch → doctor / admin / service).",
+    "Patient home tile testIDs are `module-ai-chat`, `module-doctors`, `module-organizations`, `module-pharmacies`, `module-services`, `module-home-care` (NOT `home-*` as some earlier context implied). Update selector reference for next iteration."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (25/25 pytest)", "frontend": "100% on regression spec — all 4 dashboards render, V3 chat + Claude reply verified, doctor profile V2 verified, language logo verified"},
+  "seed_data_creation": "None — reused prior V3 test data. Backend tests continue to prefix with TEST_ and clean up.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Correct patient home tile testIDs are `module-{ai-chat|doctors|organizations|pharmacies|services|home-care}` — NOT the `home-*` prefix. Inbox uses testID `open-inbox` (patient home top-right bell). Role selection testIDs: `role-patient`, `role-doctor`, `role-admin`, `role-service`. Direct navigation to `/role` works to switch between dashboards without needing the profile → Switch Role flow. Claude Sonnet 4.5 auto-reply latency ~10-15s (typing_on 1.5-3.5s + typing_off 1.8-3.2s + Claude round-trip ~4-8s). Language screen logo assets are rendered inside an <img> (not text), so `document.body.innerText` won't include 'MedUZ AI' or the tagline — verify visually via screenshot.",
+  "rca_of_issue": "Hotfix root cause was straightforward: the Doctor Dashboard called useChat() without importing it, causing a React runtime ReferenceError → red-screen. Main agent added `import { useChat } from '@/src/store/chat'` at app/(doctor)/index.tsx:20 and separated the mangled import in app/inbox.tsx:9 from `function formatWhen`. Verified: (a) both files now compile cleanly, (b) all 4 role dashboards render without any error boundary triggers, (c) the Inbox tile on the doctor dashboard correctly displays 'Patient messages' when totalUnread === 0 (screenshot /tmp/06_doctor_home.png), and (d) end-to-end V3 chat still works (Claude persona reply arrived in /tmp/r_chat_reply.png). No further action needed on this bug."
+}
